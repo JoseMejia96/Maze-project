@@ -58,7 +58,7 @@ app.use(function(err, req, res, next) {
 
 app.post('/', function(req, res){
     res.send(dibujar());
-}); 
+});
 
 module.exports = app;
 
@@ -82,38 +82,38 @@ var Constants ={
 
 
 function Maze(width, height, cell_width) {
-    
-        this.width = 30;
-        this.height = 30;
-        this.cell_width = 20;
+  var numeroRandom = Math.floor((Math.random() * 40) + 30);
+      this.width = numeroRandom;
+      this.height = numeroRandom;
+      this.cell_width = 15;
     this.maze = []
 
     this.createMaze = function()  {
         var width = this.width
         var height = this.height
         let maze = this.maze
-        
+
         var dx = [ 0, 0, -1, 1 ];
         var dy = [ -1, 1, 0, 0 ];
 
         let todo = new Array(height * width);
         let x, y, n, d;
         var  todonum;
-        
+
          Wall_NoBrick(maze,0,this.height,this.width);
 
         x = 1 + Math.nextInt(width - 2);
         y = 1 + Math.nextInt(height - 2);
 
         maze[x][y] &= ~48;
-        
-            
+
+
         rodearCuadros(maze,todo,dx,dy,x,y,0,0);
         d=gD;
         todonum=gTodos;
         console.log("arriba"+todonum);
-        
-        
+
+
         while (todonum > 0) {
             /* We select one of the squares next to the maze. */
             n = Math.nextInt(todonum);
@@ -135,17 +135,17 @@ function Maze(width, height, cell_width) {
 
             /* Remember the surrounding squares, which aren't */
             for (d = 0; d < 4; ++d) {
-                if ((maze[x + dx[d]][y + dy[d]] & Constants.QUEUED) != 0) {     
+                if ((maze[x + dx[d]][y + dy[d]] & Constants.QUEUED) != 0) {
                     todo[todonum++] = ((x + dx[d]) << Constants.QUEUED) | (y + dy[d]);
                     maze[x + dx[d]][y + dy[d]] &= ~Constants.QUEUED;
-                    
+
                 }
             }
             /* Repeat until finished. */
         }
 
         /* Add an entrance and exit. */
-        maze[1][1] &= ~Constants.WALL_ABOVE; 
+        maze[1][1] &= ~Constants.WALL_ABOVE;
         maze[width - 2][height - 2] &= ~Constants.WALL_BELOW;
     }
     /* Called to write the maze to an SVG file. */
@@ -185,7 +185,7 @@ let gD,gTodos;
 function rodearCuadros(a,t,xd,yd,x,y,num,tn){
     (num < 4) ? ejecucion() : (gD = num, gTodos = tn);
     function ejecucion(){
-    if ((a[x + xd[num]][y + yd[num]] & Constants.QUEUED) != 0) {   
+    if ((a[x + xd[num]][y + yd[num]] & Constants.QUEUED) != 0) {
                 t[tn] = ((x + xd[num]) << Constants.QUEUED) | (y + yd[num]);
                 a[x + xd[num]][y + yd[num]] &= ~Constants.QUEUED;
             }
