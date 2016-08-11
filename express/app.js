@@ -82,7 +82,7 @@ var Constants ={
 
 
 function Maze(width, height, cell_width) {
-  var numeroRandom = Math.floor((Math.random() * 40) + 30);
+  var numeroRandom = Math.floor((Math.random() * 35) + 30);
       this.width = numeroRandom;
       this.height = numeroRandom;
       this.cell_width = 15;

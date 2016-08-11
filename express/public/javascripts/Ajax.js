@@ -5,6 +5,7 @@ $("#boton").click(Laberinto);
 
 
 function Laberinto(){
+document.getElementById("maze").innerHTML=""
 var data = {};
 	data.title = "title";
 	data.message = "message";
@@ -27,7 +28,7 @@ function jsonMaze(data){
     svgElement.setAttribute("height",900);
     document.getElementById("maze").appendChild(svgElement);
 
-	 g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+	g = document.createElementNS("http://www.w3.org/2000/svg", "g");
 	g.setAttribute("stroke", "black");
 	g.setAttribute("stroke-width", "1");
 	g.setAttribute("stroke-linecap", "round");
@@ -58,22 +59,22 @@ function chars(evento) {
 }
 
 function caracteres(chars){
-	if(chars == 39){
+	if(chars == 68){
 		leftRight += 10;
 		document.getElementById("animacion").style.marginLeft = leftRight+"px";
 	}
 
-	if(chars == 37){
+	if(chars == 65){
 		leftRight -= 10;
 		document.getElementById("animacion").style.marginLeft = leftRight+"px";
 	}
 
-	if(chars == 40){
+	if(chars == 83){
 		topDown += 10;
 		document.getElementById("animacion").style.marginTop = topDown+"px";
 	}
 
-	if(chars == 38){
+	if(chars == 87){
 		topDown -= 10;
 		document.getElementById("animacion").style.marginTop = topDown+"px";
 	}
