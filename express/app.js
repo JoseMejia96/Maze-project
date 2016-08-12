@@ -57,153 +57,81 @@ app.use(function(err, req, res, next) {
 });
 
 app.post('/', function(req, res){
-    res.send(dibujar());
+    res.send(DrawMaze());
 });
 
 module.exports = app;
 
 //-----------------------maze------------------
-Math.nextInt = function (number) {
-    return Math.floor(Math.random() * number)
+function maze(x,y) {
+	var n=x*y-1;
+	if (n<0) {alert("illegal maze dimensions");return;}
+	var horiz =[]; for (var j= 0; j<x+1; j++) horiz[j]= [],
+	    verti =[]; for (var j= 0; j<x+1; j++) verti[j]= [],
+	    here = [Math.floor(Math.random()*x), Math.floor(Math.random()*y)],
+	    path = [here],
+	    unvisited = [];
+	for (var j = 0; j<x+2; j++) {
+		unvisited[j] = [];
+		for (var k= 0; k<y+1; k++)
+			unvisited[j].push(j>0 && j<x+1 && k>0 && (j != here[0]+1 || k != here[1]+1));
+	}
+	while (0<n) {
+		var potential = [[here[0]+1, here[1]], [here[0],here[1]+1],
+		    [here[0]-1, here[1]], [here[0],here[1]-1]];
+		var neighbors = [];
+		for (var j = 0; j < 4; j++)
+			if (unvisited[potential[j][0]+1][potential[j][1]+1])
+				neighbors.push(potential[j]);
+		if (neighbors.length) {
+			n = n-1;
+			next= neighbors[Math.floor(Math.random()*neighbors.length)];
+			unvisited[next[0]+1][next[1]+1]= false;
+			if (next[0] == here[0])
+				horiz[next[0]][(next[1]+here[1]-1)/2]= true;
+			else
+				verti[(next[0]+here[0]-1)/2][next[1]]= true;
+			path.push(here = next);
+		} else
+			here = path.pop();
+	}
+	return {x: x, y: y, horiz: horiz, verti: verti};
 }
 
-function println(string){
-    console.log(string);
+function GenerateMaze(m) {
+	var outstring =[];
+	for (var j= 0; j<m.x*2+1; j++) {
+		var line = [];
+		if (0 == j%2)
+			for (var k=0; k<m.y*4+1; k++)
+				if (0 == k%4)
+					line[k]= '0';
+				else
+					if (j>0 && m.verti[j/2-1][Math.floor(k/4)])
+						line[k]= '1';
+					else
+						line[k]= '0';
+		else
+			for (var k=0; k<m.y*4+1; k++)
+				if (0 == k%4)
+					if (k>0 && m.horiz[(j-1)/2][k/4-1])
+						line[k]= '1';
+					else
+						line[k]= '0';
+				else
+					line[k]= '1';
+		if (0 == j) line[1]= line[2]= line[3]= '1';
+		if (m.x*2-1 == j) line[4*m.y]= '-1';
+		outstring.push(saveLine(line));
+	}
+	return outstring;
 }
 
-var Constants ={
-    WALL_ABOVE : 1,
-    WALL_BELOW : 2,
-    WALL_LEFT : 4,
-    WALL_RIGHT : 8,
-    QUEUED : 16,
-    IN_MAZE : 32
+function saveLine(line){
+	return {linea :line};
 }
 
-
-function Maze(width, height, cell_width) {
-  var numeroRandom = Math.floor((Math.random() * 35) + 30);
-      this.width = numeroRandom;
-      this.height = numeroRandom;
-      this.cell_width = 15;
-    this.maze = []
-
-    this.createMaze = function()  {
-        var width = this.width
-        var height = this.height
-        let maze = this.maze
-
-        var dx = [ 0, 0, -1, 1 ];
-        var dy = [ -1, 1, 0, 0 ];
-
-        let todo = new Array(height * width);
-        let x, y, n, d;
-        var  todonum;
-
-         Wall_NoBrick(maze,0,this.height,this.width);
-
-        x = 1 + Math.nextInt(width - 2);
-        y = 1 + Math.nextInt(height - 2);
-
-        maze[x][y] &= ~48;
-
-
-        rodearCuadros(maze,todo,dx,dy,x,y,0,0);
-        d=gD;
-        todonum=gTodos;
-        console.log("arriba"+todonum);
-
-
-        while (todonum > 0) {
-            /* We select one of the squares next to the maze. */
-            n = Math.nextInt(todonum);
-            x = todo[n] >> 16; /* the top 2 bytes of the data */
-            y = todo[n] & 65535; /* the bottom 2 bytes of the data */
-
-            /* We will connect it, so remove it from the queue. */
-            todo[n] = todo[--todonum];
-
-            /* Select a direction, which leads to the maze. */
-            do {
-                d = Math.nextInt(4);
-            }
-            while ((maze[x + dx[d]][y + dy[d]] & Constants.IN_MAZE) != 0);
-
-            /* Connect this square to the maze. */
-            maze[x][y] &= ~((1 << d) | Constants.IN_MAZE);
-            maze[x + dx[d]][y + dy[d]] &= ~(1 << (d ^ 1));
-
-            /* Remember the surrounding squares, which aren't */
-            for (d = 0; d < 4; ++d) {
-                if ((maze[x + dx[d]][y + dy[d]] & Constants.QUEUED) != 0) {
-                    todo[todonum++] = ((x + dx[d]) << Constants.QUEUED) | (y + dy[d]);
-                    maze[x + dx[d]][y + dy[d]] &= ~Constants.QUEUED;
-
-                }
-            }
-            /* Repeat until finished. */
-        }
-
-        /* Add an entrance and exit. */
-        maze[1][1] &= ~Constants.WALL_ABOVE;
-        maze[width - 2][height - 2] &= ~Constants.WALL_BELOW;
-    }
-    /* Called to write the maze to an SVG file. */
-    this.printSVG = function () {
-        console.log("printSVG");
-        var outstring = this.drawMaze();
-        return outstring;
-    }
-
-    this.drawMaze = function () {
-        var x, y;
-        var width = this.width;
-        var height = this.height;
-        var cell_width = this.cell_width
-        var outstring = new Array();
-        for (x = 1; x < width - 1; ++x) {
-            for (y = 1; y < height - 1; ++y) {
-                if ((this.maze[x][y] & Constants.WALL_ABOVE) != 0)
-                    outstring.push(this.drawLine(      x * cell_width,       y * cell_width,      (x + 1) * cell_width,       y * cell_width));
-                if ((this.maze[x][y] & Constants.WALL_BELOW) != 0)
-                    outstring.push(this.drawLine(      x * cell_width, (y + 1) * cell_width,      (x + 1) * cell_width, (y + 1) * cell_width));
-                if ((this.maze[x][y] & Constants.WALL_LEFT) != 0)
-                    outstring.push(this.drawLine(      x * cell_width,       y * cell_width,      x * cell_width, (y + 1) * cell_width));
-                if ((this.maze[x][y] & Constants.WALL_RIGHT) != 0)
-                    outstring.push(this.drawLine((x + 1) * cell_width,       y * cell_width,      (x + 1) * cell_width, (y + 1) * cell_width));
-            }
-        }
-        return outstring;
-    }
-
-    this.drawLine = function (x1, y1, x2, y2) {
-        return {x1:x1,x2:x2,y1:y1,y2:y2};
-        }
-    }
-
-let gD,gTodos;
-function rodearCuadros(a,t,xd,yd,x,y,num,tn){
-    (num < 4) ? ejecucion() : (gD = num, gTodos = tn);
-    function ejecucion(){
-    if ((a[x + xd[num]][y + yd[num]] & Constants.QUEUED) != 0) {
-                t[tn] = ((x + xd[num]) << Constants.QUEUED) | (y + yd[num]);
-                a[x + xd[num]][y + yd[num]] &= ~Constants.QUEUED;
-            }
-            rodearCuadros(a,t,xd,yd,x,y,num+1,tn+1);
-    }
-}
-
-function Wall_NoBrick(a,x,height,width){
-                a[x] = [];
-                if(x < height) Wall_Brick(0);
-                function Wall_Brick(y){
-                    (x == 0 || x == width - 1 || y == 0 || y == height - 1) ? a[x][y] = Constants.IN_MAZE :a[x][y] = 63;
-                    (y < width) ? Wall_Brick(y+1) : Wall_NoBrick(a,x+1,height,width);
-            }
-        }
-
-function dibujar() {
-    var m = new Maze();
-    m.createMaze();
-    return m.printSVG();
+function DrawMaze(){
+	console.log("Dibujando!!")
+		return GenerateMaze(maze(8,11));
 }

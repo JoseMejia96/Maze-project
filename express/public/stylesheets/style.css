@@ -1,8 +1,11 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+#Maze {
+    border: 1px solid red;
+    padding: 5px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-a {
-  color: #00B7FF;
+body {
+    background: black;
+    padding: 5px;
 }
