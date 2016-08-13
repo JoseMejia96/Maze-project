@@ -103,27 +103,27 @@ function GenerateMaze(m) {
 	for (var j= 0; j<m.x*2+1; j++) {
 		var line = [];
 		if (0 == j%2)
-			for (var k=0; k<m.y*4+1; k++)
-				if (0 == k%4){
+			for (var k=0; k<m.y*2+1; k++)
+				if (0 == k%2){
 
           line[k]= 1;
         }
 				else
-					if (j>0 && m.verti[j/2-1][Math.floor(k/4)])
+					if (j>0 && m.verti[j/2-1][Math.floor(k/2)])
 						line[k]= 0;
 					else
 						line[k]= 1;
 		else
-			for (var k=0; k<m.y*4+1; k++)
-				if (0 == k%4)
-					if (k>0 && m.horiz[(j-1)/2][k/4-1])
+			for (var k=0; k<m.y*2+1; k++)
+				if (0 == k%2)
+					if (k>0 && m.horiz[(j-1)/2][k/2-1])
 						line[k]= 0;
 					else
 						line[k]= 1;
 				else
 					line[k]= 0;
 		if (0 == j) line[1]= 0;
-		if (m.x*2-1 == j) line[4*m.y]= -1;
+		if (m.x*2-1 == j) line[2*m.y]= -1;
 		outstring.push(saveLine(line));
 	}
 	return outstring;

@@ -47,20 +47,16 @@ function draw(){
     for(var y = 0; y < maze.length; y++){
         for(var x = 0; x < maze[y].length; x++){
             //Draw a wall
-            if(maze[y][x] === 1){
-                ctx.fillRect(x*blockSize, y*blockSize, blockSize, blockSize);
-            }
-            //Draw the goal
-            else if(maze[y][x] === -1){
-                ctx.beginPath();
-                ctx.lineWidth = 5;
-                ctx.strokeStyle = "gold";
-                ctx.moveTo(x*blockSize, y*blockSize);
-                ctx.lineTo((x+1)*blockSize, (y+1)*blockSize);
-                ctx.moveTo(x*blockSize, (y+1)*blockSize);
-                ctx.lineTo((x+1)*blockSize, y*blockSize);
-                ctx.stroke();
-            }
+						(maze[y][x]===1)?(ctx.fillRect(x*blockSize, y*blockSize, blockSize, blockSize)):(
+							(maze[y][x]===-1)?(
+						ctx.beginPath(),
+						ctx.lineWidth=5,
+						ctx.strokeStyle="gold",
+						ctx.moveTo(x*blockSize,y*blockSize),
+						ctx.lineTo((x+1)*blockSize,(y+1)*blockSize),
+						ctx.moveTo(x*blockSize,(y+1)*blockSize),
+						ctx.lineTo((x+1)*blockSize, y*blockSize),
+						ctx.stroke()):0);
         }
     }
     //Draw the player
