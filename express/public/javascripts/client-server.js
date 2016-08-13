@@ -3,6 +3,7 @@ var maze = [];
 window.onload = function(){
 	Laberinto();
 	canvas = $('#Maze');
+	document.onkeydown = press;
 }
 
 function Laberinto(){
@@ -75,7 +76,8 @@ function canMove(x, y){
     return (y>=0) && (y<maze.length) && (x >= 0) && (x < maze[y].length) && (maze[y][x] != 1);
 }
 
-$(document).keyup(function(e){
+
+function press(e){
     if((e.which == 38) && canMove(player.x, player.y-1))//Up arrow
         player.y--;
     else if((e.which == 40) && canMove(player.x, player.y+1)) // down arrow
@@ -86,6 +88,6 @@ $(document).keyup(function(e){
         player.x++;
     draw();
     e.preventDefault();
-});
+}
 
 //
