@@ -65,7 +65,7 @@ function draw(){
     //Draw the player
     ctx.beginPath();
     var half = blockSize/2;
-    ctx.fillStyle = "blue";
+    ctx.fillStyle = "red";
     ctx.arc(player.x*blockSize+half, player.y*blockSize+half, half, 0, 2*Math.PI);
     ctx.fill();
 }
