@@ -41,7 +41,7 @@ function draw(){
     var ctx = canvas[0].getContext('2d');
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, width, width);
-    ctx.fillStyle="white";
+    ctx.fillStyle="black";
     //Loop through the maze array drawing the walls and the goal
     for(var y = 0; y < maze.length; y++){
         for(var x = 0; x < maze[y].length; x++){
