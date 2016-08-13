@@ -135,5 +135,5 @@ function saveLine(line){
 
 function DrawMaze(){
 	console.log("Dibujando!!")
-		return GenerateMaze(maze(30,20));
+		return GenerateMaze(maze(30,40));
 }
