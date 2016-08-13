@@ -120,7 +120,7 @@ function GenerateMaze(m) {
 						line[k]= 1;
 				else
 					line[k]= 0;
-		if (0 == j) line[1]= line[2]= line[3]= 0;
+		if (0 == j) line[1]= 0;
 		if (m.x*2-1 == j) line[4*m.y]= -1;
 		outstring.push(saveLine(line));
 	}
