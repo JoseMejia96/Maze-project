@@ -104,8 +104,10 @@ function GenerateMaze(m) {
 		var line = [];
 		if (0 == j%2)
 			for (var k=0; k<m.y*4+1; k++)
-				if (0 == k%4)
-					line[k]= 1;
+				if (0 == k%4){
+
+          line[k]= 1;
+        }
 				else
 					if (j>0 && m.verti[j/2-1][Math.floor(k/4)])
 						line[k]= 0;
@@ -133,5 +135,5 @@ function saveLine(line){
 
 function DrawMaze(){
 	console.log("Dibujando!!")
-		return GenerateMaze(maze(8,11));
+		return GenerateMaze(maze(30,20));
 }

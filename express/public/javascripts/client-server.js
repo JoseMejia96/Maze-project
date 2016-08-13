@@ -37,7 +37,7 @@ var player = {
 function draw(){
 	console.log("entra");
     var width = canvas.width();
-    var blockSize = width/maze.length;
+    var blockSize = width/((maze.length)+20);
     var ctx = canvas[0].getContext('2d');
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, width, width);
