@@ -98,35 +98,25 @@ function maze(x, y) {
 	return { x: x, y: y, horiz: horiz, verti: verti };
 }
 
-function GenerateMaze(m) {
-	var outstring = [];
-	for (var j = 0; j < m.x * 2 + 1; j++) {
-		var line = [];
-		if (0 == j % 2)
-			for (var k = 0; k < m.y * 2 + 1; k++)
-				if (0 == k % 2) {
-
-					line[k] = 1;
-				}
-				else
-					if (j > 0 && m.verti[j / 2 - 1][Math.floor(k / 2)])
-						line[k] = 0;
-					else
-						line[k] = 1;
-		else
-			for (var k = 0; k < m.y * 2 + 1; k++)
-				if (0 == k % 2)
-					if (k > 0 && m.horiz[(j - 1) / 2][k / 2 - 1])
-						line[k] = 0;
-					else
-						line[k] = 1;
-				else
-					line[k] = 0;
-		if (0 == j) line[1] = 0;
-		if (m.x * 2 - 1 == j) line[2 * m.y] = -1;
-		outstring.push(saveLine(line));
-	}
-	return outstring;
+function GenerateMaze(m){
+function mmaze(j,k,outstring,line,m){
+if(j<m.x*2+1){
+  if(k<m.y*2+1){
+    if(j%2==0)
+    (0==k%2)?line[k]=1:((j>0&&m.verti[j/2-1][Math.floor(k/2)])?line[k]=0:line[k]=1);
+    else
+    (0==k%2)?((k>0&&m.horiz[(j-1)/2][k/2-1])?line[k]=0:line[k]=1):line[k]=0;
+    mmaze(j,k+1,outstring,line,m);
+  }else{
+    (0==j)?line[1]=0:0;
+    (m.x*2-1==j)?line[2*m.y]=-1:0;
+    outstring.push(saveLine(line));
+    mmaze(j+1,0,outstring,[],m);
+  }
+  }
+  return outstring;
+}
+  return mmaze(0,0,[],[],m);
 }
 
 function saveLine(line) {
