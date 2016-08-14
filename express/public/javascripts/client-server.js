@@ -34,6 +34,26 @@ var player = {
     y: 0
 };
 
+function fillAll(blockSize,ctx){
+function fillIt(y,x){
+		if(x<maze[y].length){
+				(maze[y][x]===1)?(ctx.fillRect(x*blockSize, y*blockSize, blockSize, blockSize)):(
+					(maze[y][x]===-1)?(
+						ctx.beginPath(),
+						ctx.lineWidth=5,
+						ctx.strokeStyle="gold",
+						ctx.moveTo(x*blockSize,y*blockSize),
+						ctx.lineTo((x+1)*blockSize,(y+1)*blockSize),
+						ctx.moveTo(x*blockSize,(y+1)*blockSize),
+						ctx.lineTo((x+1)*blockSize, y*blockSize),
+						ctx.stroke()):0);
+						fillIt(y,x+1);
+			}else if(y<maze.length-1){
+				fillIt(y+1,0);}
+			}
+	fillIt(0,0);
+}
+
 //Draw the game maze
 function draw() {
     console.log("entra");
@@ -44,21 +64,7 @@ function draw() {
     ctx.clearRect(0, 0, width, width);
     ctx.fillStyle = "black";
     //Loop through the maze array drawing the walls and the goal
-    for (var y = 0; y < maze.length; y++) {
-        for (var x = 0; x < maze[y].length; x++) {
-            //Draw a wall
-            (maze[y][x] === 1) ? (ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize)) : (
-                (maze[y][x] === -1) ? (
-                    ctx.beginPath(),
-                    ctx.lineWidth = 5,
-                    ctx.strokeStyle = "gold",
-                    ctx.moveTo(x * blockSize, y * blockSize),
-                    ctx.lineTo((x + 1) * blockSize, (y + 1) * blockSize),
-                    ctx.moveTo(x * blockSize, (y + 1) * blockSize),
-                    ctx.lineTo((x + 1) * blockSize, y * blockSize),
-                    ctx.stroke()) : 0);
-        }
-    }
+  	fillAll(blockSize,ctx);
     //Draw the player
     ctx.beginPath();
     var half = blockSize / 2;
