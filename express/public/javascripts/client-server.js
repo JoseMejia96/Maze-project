@@ -1,11 +1,4 @@
-var canvas;
-var maze = [];
-window.onload = function () {
-    Laberinto();
-    canvas = $('#Maze');
-    document.onkeydown = press;
-}
-
+//-------------AJAX---------------------------------------
 function Laberinto() {
     var data = {};
     data.title = "title";
@@ -16,11 +9,35 @@ function Laberinto() {
         contentType: 'application/json',
         url: 'http://localhost:3000',
         success: function (data) {
-            maze = jsonMaze(data);
+            maze = jsonMaze(JSON.parse(data));
             draw();
             console.log('success');
         }
     });
+}
+//---------------------------------------------------------------
+function enviaDatos() {
+    var data = {};
+    data.title = "title";
+    data.message = "message";
+
+    $.ajax({
+      type: 'POST',
+      data: JSON.stringify(data),
+      ontentType: 'application/json',
+      url: 'http://localhost:3000',
+      success: function(data) {
+      console.log('Datos enviados');
+        }
+    });
+}
+//-----------------------------------------------------------------
+var canvas;
+var maze = [];
+window.onload = function () {
+    Laberinto();
+    canvas = $('#Maze');
+    document.onkeydown = press;
 }
 
 function jsonMaze(data) {
@@ -91,5 +108,4 @@ function press(e) {
     draw();
     e.preventDefault();
 }
-
-//
+//---------------------------------------------------------------------------

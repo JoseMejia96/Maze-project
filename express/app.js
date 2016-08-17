@@ -1,13 +1,14 @@
-var express = require('express');
-var http = require('http');
-var path = require('path');
-var favicon = require('static-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+var express = require('express'),
+ http = require('http'),
+ path = require('path'),
+ favicon = require('static-favicon'),
+ logger = require('morgan'),
+ cookieParser = require('cookie-parser'),
+ bodyParser = require('body-parser');
 
-var routes = require('./routes');
-var users = require('./routes/user');
+var routes = require('./routes'),
+users = require('./routes/user'),
+bd =require("./bd/baseDatos");
 
 var app = express();
 
@@ -57,7 +58,7 @@ app.use(function (err, req, res, next) {
 });
 
 app.post('/', function (req, res) {
-    res.send(DrawMaze());
+    res.send(JSON.stringify(DrawMaze()));
 });
 
 module.exports = app;
