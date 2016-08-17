@@ -1,13 +1,10 @@
 //-------------AJAX---------------------------------------
 function Laberinto() {
     var data = {};
-    data.title = "title";
-    data.message = "message";
-
     $.ajax({
         type: 'POST',
         contentType: 'application/json',
-        url: 'http://localhost:3000',
+        url: 'http://localhost:3000/generaMaze',
         success: function (data) {
             maze = jsonMaze(JSON.parse(data));
             draw();
@@ -16,19 +13,16 @@ function Laberinto() {
     });
 }
 //---------------------------------------------------------------
-function enviaDatos() {
-    var data = {};
-    data.title = "title";
-    data.message = "message";
-
+function enviaDatos(x,y) {
+  var data = {x:x,y:y};
     $.ajax({
       type: 'POST',
-      data: JSON.stringify(data),
+      data: data,
       ontentType: 'application/json',
-      url: 'http://localhost:3000',
-      success: function(data) {
-      console.log('Datos enviados');
-        }
+      url: 'http://localhost:3000/insert',
+      success: function (data) {
+          console.log(data.done);
+      }
     });
 }
 //-----------------------------------------------------------------
@@ -73,7 +67,6 @@ function fillIt(y,x){
 
 //Draw the game maze
 function draw() {
-    console.log("entra");
     var width = canvas.width();
     var blockSize = width / ((maze.length) + 20);
     var ctx = canvas[0].getContext('2d');
@@ -105,6 +98,8 @@ function press(e) {
         player.x--;
     else if ((e.which == 39) && canMove(player.x + 1, player.y))
         player.x++;
+
+        enviaDatos(player.x,player.y);
     draw();
     e.preventDefault();
 }

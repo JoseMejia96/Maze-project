@@ -8,8 +8,9 @@ var express = require('express'),
 
 var routes = require('./routes'),
 users = require('./routes/user'),
-bd =require("./bd/baseDatos");
-
+mongoose   = require('mongoose');
+mongoose.connect('mongodb://localhost/MazeDB');
+var mazeModel = require('./modelo/modelo');
 var app = express();
 
 // view engine setup
@@ -19,7 +20,7 @@ app.set('view engine', 'ejs');
 app.use(favicon());
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(require('less-middleware')({ src: path.join(__dirname, 'public') }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -57,9 +58,22 @@ app.use(function (err, req, res, next) {
     });
 });
 
-app.post('/', function (req, res) {
+app.post('/generaMaze', function (req, res) {
     res.send(JSON.stringify(DrawMaze()));
 });
+
+	// create a maze (accessed at POST http://localhost:3000/mazes)
+	app.post('/insert',function(req, res) {
+		var maze = new mazeModel();		// create a new instance of the maze model
+		maze.x = req.body.x,  // set the mazes name (comes from the request)
+    maze.y = req.body.y;
+		maze.save(err=> {
+			if (err)
+				res.send(err);
+            console.log('Post ' + err);
+			res.json({ message: 'maze created!', "mazeId" : maze._id});
+		});
+	})
 
 module.exports = app;
 
