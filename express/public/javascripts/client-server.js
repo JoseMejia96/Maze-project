@@ -65,7 +65,7 @@ function fillIt(y,x){
 	fillIt(0,0);
 }
 
-//Draw the game maze
+//---------------------------Primera vez-----------------------
 function draw() {
     var width = canvas.width();
     var blockSize = width / ((maze.length) + 20);
@@ -104,3 +104,65 @@ function press(e) {
     e.preventDefault();
 }
 //---------------------------------------------------------------------------
+function searchMaze(y,x) {
+
+   if ( (x == 80) && (y == 59) ) {
+     console.log("Yuhu!, i have found the way out!");
+     maze[y][x] = 2;
+     return;
+   }
+     if ( (x < 0) || (x > 80) || (y < 0) || (y > 60) ) {
+       return;
+     }
+       if (maze[y][x] == 1) {
+         return;
+       }
+         if (maze[y][x] == 2) {
+           return;
+         }
+              maze[y][x] = 2;  // estoy bien
+
+   searchMaze( y,(x + 1));   // der
+   searchMaze(y + 1,x);   // abajo
+   searchMaze(y,x - 1);   // izq
+   searchMaze(y - 1,x);   // arriba
+
+   return;
+ }
+//--------------------------------------------------RESPUESTA MARCADA-------------------------------------------------------------
+function fillAllAnswer(blockSize,ctx){
+function fillItAnswer(y,x){
+  if(x<maze[y].length){
+    if(maze[y][x]===2){
+      ctx.fillStyle = "red";
+      ctx.fillRect(x*blockSize, y*blockSize, blockSize, blockSize);
+    }
+
+      (maze[y][x]===1)?(ctx.fillRect(x*blockSize, y*blockSize, blockSize, blockSize),ctx.fillStyle = "black"):(
+        (maze[y][x]===-1)?(
+          ctx.beginPath(),
+          ctx.lineWidth=5,
+          ctx.strokeStyle="gold",
+          ctx.moveTo(x*blockSize,y*blockSize),
+          ctx.lineTo((x+1)*blockSize,(y+1)*blockSize),
+          ctx.moveTo(x*blockSize,(y+1)*blockSize),
+          ctx.lineTo((x+1)*blockSize, y*blockSize),
+          ctx.stroke()):0);
+          fillItAnswer(y,x+1);
+    }else if(y<maze.length-1){
+      fillItAnswer(y+1,0);}
+    }
+fillItAnswer(0,0);
+}
+
+function drawAnswer() {
+    searchMaze(0,1);
+    console.log(JSON.stringify(maze));
+    var width = canvas.width();
+    var blockSize = width / ((maze.length) + 20);
+    var ctx = canvas[0].getContext('2d');
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, width, width);
+    //Loop through the maze array drawing the walls and the goal
+  	fillAllAnswer(blockSize,ctx);
+}
