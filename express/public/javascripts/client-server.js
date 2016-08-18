@@ -110,14 +110,14 @@ function searchMaze(y, x) {
     function searchMaze(y, x, m) {
         if (r.indexOf("," + x + "" + y) == -1) {
             r += "," + x + "" + y;
-            var log1 = (x < 1) || (x > 80) || (y < 0) || (y > 60);
+            var log1 = (x < 0) || (x > 80) || (y < 0) || (y > 59);
             if (log1 == false) {
                 var log2 = m[y][x] == 1 || m[y][x] == 2;
                 if (log2 == false) {
         console.log("x ,y = "+x+" "+y);
                     var copy = m.map((arr) => arr.slice());
                     copy[y][x] = 2;  // estoy bien
-                    if ((x == 80) && (y == 60)) {
+                    if ((x == 80) && (y == 59)) {
                         console.log("Yuhu!, i have found the way out!");
                         return copy;
                     }
@@ -139,6 +139,7 @@ function searchMaze(y, x) {
                     if (i != null) {
                         return i;
                     }
+                    if(y>0)
                     var u = searchMaze(y - 1, x, copy);   // arriba
 
                     
