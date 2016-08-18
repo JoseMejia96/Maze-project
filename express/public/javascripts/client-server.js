@@ -13,16 +13,16 @@ function Laberinto() {
     });
 }
 //---------------------------------------------------------------
-function enviaDatos(x,y) {
-  var data = {x:x,y:y};
+function enviaDatos(x, y) {
+    var data = { x: x, y: y };
     $.ajax({
-      type: 'POST',
-      data: data,
-      ontentType: 'application/json',
-      url: 'http://localhost:3000/insert',
-      success: function (data) {
-          console.log(data.done);
-      }
+        type: 'POST',
+        data: data,
+        ontentType: 'application/json',
+        url: 'http://localhost:3000/insert',
+        success: function (data) {
+            console.log(data.done);
+        }
     });
 }
 //-----------------------------------------------------------------
@@ -45,24 +45,25 @@ var player = {
     y: 0
 };
 
-function fillAll(blockSize,ctx){
-function fillIt(y,x){
-		if(x<maze[y].length){
-				(maze[y][x]===1)?(ctx.fillRect(x*blockSize, y*blockSize, blockSize, blockSize)):(
-					(maze[y][x]===-1)?(
-						ctx.beginPath(),
-						ctx.lineWidth=5,
-						ctx.strokeStyle="gold",
-						ctx.moveTo(x*blockSize,y*blockSize),
-						ctx.lineTo((x+1)*blockSize,(y+1)*blockSize),
-						ctx.moveTo(x*blockSize,(y+1)*blockSize),
-						ctx.lineTo((x+1)*blockSize, y*blockSize),
-						ctx.stroke()):0);
-						fillIt(y,x+1);
-			}else if(y<maze.length-1){
-				fillIt(y+1,0);}
-			}
-	fillIt(0,0);
+function fillAll(blockSize, ctx) {
+    function fillIt(y, x) {
+        if (x < maze[y].length) {
+            (maze[y][x] === 1) ? (ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize)) : (
+                (maze[y][x] === -1) ? (
+                    ctx.beginPath(),
+                    ctx.lineWidth = 5,
+                    ctx.strokeStyle = "gold",
+                    ctx.moveTo(x * blockSize, y * blockSize),
+                    ctx.lineTo((x + 1) * blockSize, (y + 1) * blockSize),
+                    ctx.moveTo(x * blockSize, (y + 1) * blockSize),
+                    ctx.lineTo((x + 1) * blockSize, y * blockSize),
+                    ctx.stroke()) : 0);
+            fillIt(y, x + 1);
+        } else if (y < maze.length - 1) {
+            fillIt(y + 1, 0);
+        }
+    }
+    fillIt(0, 0);
 }
 
 //---------------------------Primera vez-----------------------
@@ -74,7 +75,7 @@ function draw() {
     ctx.clearRect(0, 0, width, width);
     ctx.fillStyle = "black";
     //Loop through the maze array drawing the walls and the goal
-  	fillAll(blockSize,ctx);
+    fillAll(blockSize, ctx);
     //Draw the player
     ctx.beginPath();
     var half = blockSize / 2;
@@ -99,61 +100,83 @@ function press(e) {
     else if ((e.which == 39) && canMove(player.x + 1, player.y))
         player.x++;
 
-        enviaDatos(player.x,player.y);
+    enviaDatos(player.x, player.y);
     draw();
     e.preventDefault();
 }
 //---------------------------------------------------------------------------
-function searchMaze(y,x) {
+function searchMaze(y, x) {
+    var r = "";
+    function searchMaze(y, x, m) {
+        if (r.indexOf("," + x + "" + y) == -1) {
+            r += "," + x + "" + y;
+            var log1 = (x < 1) || (x > 80) || (y < 0) || (y > 60);
+            if (log1 == false) {
+                var log2 = m[y][x] == 1 || m[y][x] == 2;
+                if (log2 == false) {
+        console.log("x ,y = "+x+" "+y);
+                    var copy = m.map((arr) => arr.slice());
+                    copy[y][x] = 2;  // estoy bien
+                    if ((x == 80) && (y == 60)) {
+                        console.log("Yuhu!, i have found the way out!");
+                        return copy;
+                    }
+                    var d = searchMaze(y, (x + 1), copy);   // der
 
-   if ( (x == 80) && (y == 59) ) {
-     console.log("Yuhu!, i have found the way out!");
-     maze[y][x] = 2;
-     return;
-   }
-     if ( (x < 0) || (x > 80) || (y < 0) || (y > 60) ) {
-       return;
-     }
-       if (maze[y][x] == 1) {
-         return;
-       }
-         if (maze[y][x] == 2) {
-           return;
-         }
-              maze[y][x] = 2;  // estoy bien
+                    if (d != null) {
+                        return d;
+                    }
 
-   searchMaze( y,(x + 1));   // der
-   searchMaze(y + 1,x);   // abajo
-   searchMaze(y,x - 1);   // izq
-   searchMaze(y - 1,x);   // arriba
+                    var a = searchMaze(y + 1, x, copy);   // abajo
 
-   return;
- }
+                    
+                    if (a != null) {
+                        return a;
+                    }
+                    var i = searchMaze(y, x - 1, copy);   // izq
+
+                       
+                    if (i != null) {
+                        return i;
+                    }
+                    var u = searchMaze(y - 1, x, copy);   // arriba
+
+                    
+                    if (u != null) {
+                        return u;
+                    }
+                }
+            }
+        }
+    }
+    return searchMaze(y, x, maze);
+}
 //--------------------------------------------------RESPUESTA MARCADA-------------------------------------------------------------
-function fillAllAnswer(blockSize,ctx){
-function fillItAnswer(y,x){
-  if(x<maze[y].length){
-    switch(maze[y][x]){
-      case 0:
-        ctx.fillStyle = "white";
-        break;
-      case 1:
-        ctx.fillStyle = "black";
-        break;
-      case 2:
-        ctx.fillStyle = "red";
-        break;
+function fillAllAnswer(blockSize, ctx) {
+    function fillItAnswer(y, x) {
+        if (x < maze[y].length) {
+            switch (maze[y][x]) {
+                case 0:
+                    ctx.fillStyle = "white";
+                    break;
+                case 1:
+                    ctx.fillStyle = "black";
+                    break;
+                case 2:
+                    ctx.fillStyle = "red";
+                    break;
+            }
+            ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize);
+            fillItAnswer(y, x + 1);
+        } else if (y < maze.length - 1) {
+            fillItAnswer(y + 1, 0);
+        }
     }
-    ctx.fillRect(x*blockSize, y*blockSize, blockSize, blockSize);
-          fillItAnswer(y,x+1);
-    }else if(y<maze.length-1){
-      fillItAnswer(y+1,0);}
-    }
-fillItAnswer(0,0);
+    fillItAnswer(0, 0);
 }
 
 function drawAnswer() {
-    searchMaze(0,1);
+    maze = searchMaze(0, 1);
     console.log(JSON.stringify(maze));
     var width = canvas.width();
     var blockSize = width / ((maze.length) + 20);
@@ -161,5 +184,5 @@ function drawAnswer() {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, width, width);
     //Loop through the maze array drawing the walls and the goal
-  	fillAllAnswer(blockSize,ctx);
+    fillAllAnswer(blockSize, ctx);
 }
