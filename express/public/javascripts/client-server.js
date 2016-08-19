@@ -107,54 +107,35 @@ function press(e) {
 //---------------------------------------------------------------------------
 function searchMaze(y, x) {
     var r = "";
+    var sol;
     function searchMaze(y, x, m) {
-        if (r.indexOf("," + x + "" + y) == -1) {
-            r += "," + x + "" + y;
+        if (r.indexOf(",x:" + x + "-y:" + y) == -1) {
             var log1 = (x < 0) || (x > 80) || (y < 0) || (y > 59);
             if (log1 == false) {
                 var log2 = m[y][x] == 1 || m[y][x] == 2;
                 if (log2 == false) {
-                    
+                    r += ",x:" + x + "-y:" + y;
                     var copy = m.map((arr) => arr.slice());
                     copy[y][x] = 2;  // estoy bien
-                    player.y=y;
-                    player.x=x;
+                    player.y = y;
+                    player.x = x;
                     draw();
                     if ((x == 80) && (y == 59)) {
                         console.log("Yuhu!, i have found the way out!");
-                        return copy;
+                        sol = copy.map((arr) => arr.slice());
+                        return;
                     }
-                    
-                    var d = searchMaze(y, (x + 1), copy);   // der
+                    searchMaze(y, (x + 1), copy);   // der
+                    searchMaze(y + 1, x, copy);   // abajo
+                    searchMaze(y, x - 1, copy);   // izq
+                    searchMaze(y - 1, x, copy);   // arriba
 
-                    if (d != undefined) {
-                        return d;
-                    }
-
-                    var a = searchMaze(y + 1, x, copy);   // abajo
-
-
-                    if (a != undefined) {
-                        return a;
-                    }
-                    var i = searchMaze(y, x - 1, copy);   // izq
-
-
-                    if (i != undefined) {
-                        return i;
-                    }
-                    if (y > 0)
-                        var u = searchMaze(y - 1, x, copy);   // arriba
-
-
-                    if (u != undefined) {
-                        return u;
-                    }
                 }
             }
         }
     }
-    return searchMaze(y, x, maze);
+    searchMaze(y, x, maze);
+    return sol;
 }
 //--------------------------------------------------RESPUESTA MARCADA-------------------------------------------------------------
 function fillAllAnswer(blockSize, ctx) {
