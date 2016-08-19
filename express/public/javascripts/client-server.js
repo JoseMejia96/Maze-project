@@ -114,36 +114,40 @@ function searchMaze(y, x) {
             if (log1 == false) {
                 var log2 = m[y][x] == 1 || m[y][x] == 2;
                 if (log2 == false) {
-        console.log("x ,y = "+x+" "+y);
+                    
                     var copy = m.map((arr) => arr.slice());
                     copy[y][x] = 2;  // estoy bien
+                    player.y=y;
+                    player.x=x;
+                    draw();
                     if ((x == 80) && (y == 59)) {
                         console.log("Yuhu!, i have found the way out!");
                         return copy;
                     }
+                    
                     var d = searchMaze(y, (x + 1), copy);   // der
 
-                    if (d != null) {
+                    if (d != undefined) {
                         return d;
                     }
 
                     var a = searchMaze(y + 1, x, copy);   // abajo
 
-                    
-                    if (a != null) {
+
+                    if (a != undefined) {
                         return a;
                     }
                     var i = searchMaze(y, x - 1, copy);   // izq
 
-                       
-                    if (i != null) {
+
+                    if (i != undefined) {
                         return i;
                     }
-                    if(y>0)
-                    var u = searchMaze(y - 1, x, copy);   // arriba
+                    if (y > 0)
+                        var u = searchMaze(y - 1, x, copy);   // arriba
 
-                    
-                    if (u != null) {
+
+                    if (u != undefined) {
                         return u;
                     }
                 }
