@@ -122,7 +122,7 @@ function searchMaze(y, x) {
                     maze[y][x] = 5;
                     player.y = y;
                     player.x = x;
-                    draw();
+                   // draw();
                     if ((x == 80) && (y == 59)) {
                         console.log("Yuhu!, i have found the way out!");
                         sol = copy.map((arr) => arr.slice());
