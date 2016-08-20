@@ -48,7 +48,7 @@ var player = {
 function fillAll(blockSize, ctx) {
     function fillIt(y, x) {
         if (x < maze[y].length) {
-            (maze[y][x] === 1) ? (ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize)) : (
+            (maze[y][x] === 1) ? (ctx.fillStyle = "black",ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize)) : (
                 (maze[y][x] === -1) ? (
                     ctx.beginPath(),
                     ctx.lineWidth = 5,
@@ -57,7 +57,10 @@ function fillAll(blockSize, ctx) {
                     ctx.lineTo((x + 1) * blockSize, (y + 1) * blockSize),
                     ctx.moveTo(x * blockSize, (y + 1) * blockSize),
                     ctx.lineTo((x + 1) * blockSize, y * blockSize),
-                    ctx.stroke()) : 0);
+                    ctx.stroke()) : (maze[y][x]===5)?
+                    (ctx.fillStyle = "yellow",
+                    ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize)):0
+                  );
             fillIt(y, x + 1);
         } else if (y < maze.length - 1) {
             fillIt(y + 1, 0);
@@ -106,34 +109,34 @@ function press(e) {
 }
 //---------------------------------------------------------------------------
 function searchMaze(y, x) {
-    var r = "";
     var sol;
     function searchMaze(y, x, m) {
-        if (r.indexOf(",x:" + x + "-y:" + y) == -1) {
-            var log1 = (x < 0) || (x > 80) || (y < 0) || (y > 59);
-            if (log1 == false) {
-                var log2 = m[y][x] == 1 || m[y][x] == 2;
-                if (log2 == false) {
-                    r += ",x:" + x + "-y:" + y;
+      if(!sol){
+        if (maze[y][x]!=5) {
+          var log1 =(x < 0) || (x > 80) || (y < 0) || (y > 59);
+            if (!log1) {
+                var log2 = m[y][x] == 1;
+                if (!log2) {
                     var copy = m.map((arr) => arr.slice());
                     copy[y][x] = 2;  // estoy bien
+                    maze[y][x] = 5;
                     player.y = y;
                     player.x = x;
                     draw();
                     if ((x == 80) && (y == 59)) {
                         console.log("Yuhu!, i have found the way out!");
                         sol = copy.map((arr) => arr.slice());
-                        return;
+                        return sol;
                     }
-                    searchMaze(y, (x + 1), copy);   // der
                     searchMaze(y + 1, x, copy);   // abajo
-                    searchMaze(y, x - 1, copy);   // izq
+                    searchMaze(y, x + 1, copy);   // der
                     searchMaze(y - 1, x, copy);   // arriba
+                    searchMaze(y, x - 1, copy);   // izq
 
                 }
             }
         }
-    }
+    }else{return sol;}}
     searchMaze(y, x, maze);
     return sol;
 }
