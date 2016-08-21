@@ -9,3 +9,42 @@ body {
     background: White;
     padding: 5px;
 }
+
+.button {
+  color: white;
+  padding: 16px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+.button1 {
+  background-color: #555555;
+  color: white;
+}
+
+.button1:hover {
+  background-color: white;
+  color: black;
+  border: 2px solid #555555;
+}
+
+h1{
+  font-family:cursive;
+  font-size: 200%;
+}
+
+#Articuno{
+  width: 50px;
+  height: 50px;
+}
+
+#Arti{
+  margin-top: 45px;;
+  margin-left: 420px;
+}

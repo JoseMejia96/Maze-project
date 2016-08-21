@@ -6,10 +6,16 @@
 </head>
 <body>
 <center>
+	<div id="Arti" style="position: absolute">
+	<image id="Articuno" src="/images/Articuno_XY.gif">
+	</div>
 	<h1 id="titulo" >Maze</h1>
+
 	<canvas id="Maze" width="800px" height="600px"></canvas>
-	<input type="submit" value="Solución inicial" onclick="drawAnswer()"/>
-	<input type="submit" value="Solución actual" onclick="drawAnswer2()"/>
+	<div id=botones>
+	<button class ="button button1" onclick="drawAnswer()">Solución inicial<button/>
+	<button class ="button button1" onclick="drawAnswer2()">Solución actual</button>
+	</div>
 </center>
 </body>
 <script type="text/javascript" src="/javascripts/jquery.js"></script>

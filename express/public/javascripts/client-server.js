@@ -42,7 +42,7 @@ function sound(src) {
 }
 
 //-----------------------------------------------------------------
-var canvas;
+var canvas,leftRight = 420,upDown = 45;
 var music;
 var maze = [];
 window.onload = function () {
@@ -102,7 +102,7 @@ function draw() {
         //Draw the player
         ctx.beginPath();
         half = blockSize / 2;
-        ctx.fillStyle = "red";
+        ctx.fillStyle = "white";
         ctx.arc(player.x * blockSize + half, player.y * blockSize + half, half, 0, 2 * Math.PI);
         ctx.fill();
 }
@@ -114,11 +114,13 @@ function canMove(x, y) {
 
 
 function press(e) {
-    var hit = new sound('/sound/audio.wav');
+    var hit = new sound('/sound/Articuno.ogg');
 
   switch(e.which){
     case 38:
     if(canMove(player.x, player.y-1)){
+        upDown -= 10;
+        document.getElementById("Arti").style.marginTop = upDown+"px";
       player.y--;
     }else{
     hit.play();
@@ -127,6 +129,8 @@ function press(e) {
 
     case 40:
     if(canMove(player.x, player.y+1)){
+        upDown += 10;
+        document.getElementById("Arti").style.marginTop = upDown+"px";
       player.y++;
     }else{
       hit.play();
@@ -136,6 +140,8 @@ function press(e) {
     case 37:
     if(canMove(player.x-1, player.y)){
       player.x--;
+      leftRight -=10;
+      document.getElementById("Arti").style.marginLeft = leftRight+"px";
     }else{
       hit.play();
     }
@@ -144,6 +150,8 @@ function press(e) {
     case 39:
     if(canMove(player.x+1, player.y)){
       player.x++;
+      leftRight +=10;
+      document.getElementById("Arti").style.marginLeft = leftRight+"px";
     }else{
       hit.play();
     }
