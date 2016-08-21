@@ -25,12 +25,31 @@ function enviaDatos(x, y) {
         }
     });
 }
+//----------------------Audio fondo
+function sound(src) {
+    this.sound = document.createElement("audio");
+    this.sound.src = src;
+    this.sound.setAttribute("preload", "auto");
+    this.sound.setAttribute("controls", "none");
+    this.sound.style.display = "none";
+    document.body.appendChild(this.sound);
+    this.play = function(){
+        this.sound.play();
+    }
+    this.stop = function(){
+        this.sound.pause();
+    }
+}
+
 //-----------------------------------------------------------------
 var canvas;
+var music;
 var maze = [];
 window.onload = function () {
     Laberinto();
     canvas = $('#Maze');
+    music = new sound('/sound/back.mp3');
+    music.play();
     document.onkeydown = press;
 }
 
@@ -72,19 +91,22 @@ function fillAll(blockSize, ctx) {
 //---------------------------Primera vez-----------------------
 function draw() {
     var width = canvas.width();
+    var half,win;
     var blockSize = width / ((maze.length) + 20);
     var ctx = canvas[0].getContext('2d');
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.clearRect(0, 0, width, width);
-    ctx.fillStyle = "black";
-    //Loop through the maze array drawing the walls and the goal
-    fillAll(blockSize, ctx);
-    //Draw the player
-    ctx.beginPath();
-    var half = blockSize / 2;
-    ctx.fillStyle = "red";
-    ctx.arc(player.x * blockSize + half, player.y * blockSize + half, half, 0, 2 * Math.PI);
-    ctx.fill();
+    (player.x==80 && player.y==59)?(win = new Image(),win.src ='/images/youwin.png',ctx.drawImage(win,0,0),ctx.stroke(),music.stop()):(
+        ctx.setTransform(1, 0, 0, 1, 0, 0),
+        ctx.clearRect(0, 0, width, width),
+        ctx.fillStyle = "black",
+        //Loop through the maze array drawing the walls and the goal
+        fillAll(blockSize, ctx),
+        //Draw the player
+        ctx.beginPath(),
+        half = blockSize / 2,
+        ctx.fillStyle = "red",
+        ctx.arc(player.x * blockSize + half, player.y * blockSize + half, half, 0, 2 * Math.PI),
+        ctx.fill()
+    );
 }
 
 //Check to see if the new space is inside the maze and not a wall
@@ -94,7 +116,7 @@ function canMove(x, y) {
 
 
 function press(e) {
-    if ((e.which == 38) && canMove(player.x, player.y - 1))//Up arrow
+     if((e.which == 38) && canMove(player.x, player.y - 1))
         player.y--;
     else if ((e.which == 40) && canMove(player.x, player.y + 1)) // down arrow
         player.y++;
@@ -106,6 +128,7 @@ function press(e) {
     enviaDatos(player.x, player.y);
     draw();
     e.preventDefault();
+
 }
 //---------------------------------------------------------------------------
 function searchMaze(y, x) {
@@ -122,7 +145,7 @@ function searchMaze(y, x) {
                     maze[y][x] = 5;
                     player.y = y;
                     player.x = x;
-                    draw();
+                    //draw();
                     if ((x == 80) && (y == 59)) {
                         console.log("Yuhu!, i have found the way out!");
                         sol = copy.map((arr) => arr.slice());
