@@ -128,16 +128,6 @@ function press(e) {
     break;
 
   }
-  /*  if ((e.which == 38) {
-      if(canMove(player.x, player.y - 1)))//Up arrow
-        player.y--;
-      }
-    else if ((e.which == 40) && canMove(player.x, player.y + 1)) // down arrow
-        player.y++;
-    else if ((e.which == 37) && canMove(player.x - 1, player.y))
-        player.x--;
-    else if ((e.which == 39) && canMove(player.x + 1, player.y))
-        player.x++;*/
 
 
     enviaDatos(player.x, player.y);
@@ -159,7 +149,6 @@ function searchMaze(y, x) {
                     maze[y][x] = 5;
                     player.y = y;
                     player.x = x;
-                    //draw();
                     if ((x == 80) && (y == 59)) {
                         console.log("Yuhu!, i have found the way out!");
                         sol = copy.map((arr) => arr.slice());
