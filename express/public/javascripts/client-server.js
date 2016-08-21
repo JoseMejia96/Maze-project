@@ -34,13 +34,21 @@ function sound(src) {
     this.sound.style.display = "none";
     document.body.appendChild(this.sound);
     this.play = function(){
-        this.sound.play();
-    }
+            this.sound.play();
+        }
     this.stop = function(){
         this.sound.pause();
     }
 }
 
+function soundTrack(src){
+    myAudio = new Audio(src);
+    myAudio.addEventListener('ended', function() {
+        this.currentTime = 0;
+        this.play();
+    }, false);
+    myAudio.play();
+}
 //-----------------------------------------------------------------
 var canvas,leftRight = 420,upDown = 65;
 var music;
@@ -49,8 +57,7 @@ window.onload = function () {
     Laberinto();
     canvas = $('#Maze');
     empezarDetener(this);
-    music = new sound('/sound/back.mp3');
-    music.play();
+    soundTrack('/sound/back.mp3');
     document.onkeydown = press;
 }
 
