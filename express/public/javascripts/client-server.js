@@ -94,14 +94,51 @@ function canMove(x, y) {
 
 
 function press(e) {
-    if ((e.which == 38) && canMove(player.x, player.y - 1))//Up arrow
+  switch(e.which){
+    case 38:
+    if(canMove(player.x, player.y-1)){
+      player.y--;
+    }else{
+    document.getElementById('audiotag1').play();
+    }
+    break;
+
+    case 40:
+    if(canMove(player.x, player.y+1)){
+      player.y++;
+    }else{
+      document.getElementById('audiotag1').play();
+    }
+    break;
+
+    case 37:
+    if(canMove(player.x-1, player.y)){
+      player.x--;
+    }else{
+      document.getElementById('audiotag1').play();
+    }
+    break;
+
+    case 39:
+    if(canMove(player.x+1, player.y)){
+      player.x++;
+    }else{
+      document.getElementById('audiotag1').play();
+    }
+    break;
+
+  }
+  /*  if ((e.which == 38) {
+      if(canMove(player.x, player.y - 1)))//Up arrow
         player.y--;
+      }
     else if ((e.which == 40) && canMove(player.x, player.y + 1)) // down arrow
         player.y++;
     else if ((e.which == 37) && canMove(player.x - 1, player.y))
         player.x--;
     else if ((e.which == 39) && canMove(player.x + 1, player.y))
-        player.x++;
+        player.x++;*/
+
 
     enviaDatos(player.x, player.y);
     draw();
@@ -122,7 +159,7 @@ function searchMaze(y, x) {
                     maze[y][x] = 5;
                     player.y = y;
                     player.x = x;
-                    draw();
+                    //draw();
                     if ((x == 80) && (y == 59)) {
                         console.log("Yuhu!, i have found the way out!");
                         sol = copy.map((arr) => arr.slice());
@@ -166,6 +203,18 @@ function fillAllAnswer(blockSize, ctx) {
 
 function drawAnswer() {
     maze = searchMaze(0, 1);
+    console.log(JSON.stringify(maze));
+    var width = canvas.width();
+    var blockSize = width / ((maze.length) + 20);
+    var ctx = canvas[0].getContext('2d');
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, width, width);
+    //Loop through the maze array drawing the walls and the goal
+    fillAllAnswer(blockSize, ctx);
+}
+
+function drawAnswer2() {
+    maze = searchMaze(player.y, player.x);
     console.log(JSON.stringify(maze));
     var width = canvas.width();
     var blockSize = width / ((maze.length) + 20);
