@@ -91,22 +91,20 @@ function fillAll(blockSize, ctx) {
 //---------------------------Primera vez-----------------------
 function draw() {
     var width = canvas.width();
-    var half,win;
+    var half;
     var blockSize = width / ((maze.length) + 20);
     var ctx = canvas[0].getContext('2d');
-    (player.x==80 && player.y==59)?(win = new Image(),win.src ='/images/youwin.png',ctx.drawImage(win,0,0),ctx.stroke(),music.stop()):(
-        ctx.setTransform(1, 0, 0, 1, 0, 0),
-        ctx.clearRect(0, 0, width, width),
-        ctx.fillStyle = "black",
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, width, width);
+        ctx.fillStyle = "black";
         //Loop through the maze array drawing the walls and the goal
-        fillAll(blockSize, ctx),
+        fillAll(blockSize, ctx);
         //Draw the player
-        ctx.beginPath(),
-        half = blockSize / 2,
-        ctx.fillStyle = "red",
-        ctx.arc(player.x * blockSize + half, player.y * blockSize + half, half, 0, 2 * Math.PI),
-        ctx.fill()
-    );
+        ctx.beginPath();
+        half = blockSize / 2;
+        ctx.fillStyle = "red";
+        ctx.arc(player.x * blockSize + half, player.y * blockSize + half, half, 0, 2 * Math.PI);
+        ctx.fill();
 }
 
 //Check to see if the new space is inside the maze and not a wall
@@ -152,11 +150,24 @@ function press(e) {
     break;
 
   }
-
+var win,dab = new sound('/sound/dab.mp3'),ctx = canvas[0].getContext('2d');
     enviaDatos(player.x, player.y);
     draw();
-    e.preventDefault();
+    if(player.x == 79 && player.y ==59){
+        win = new Image(),win.src ='/images/youwin.jpg';
+        ctx.drawImage(win,0,0);
+        ctx.stroke();
+    }
 
+    if(player.x==80 && player.y==59){
+        music.stop();
+        dab.play();
+        win = new Image(),win.src ='/images/youwin.jpg';
+        ctx.drawImage(win,0,0);
+        ctx.stroke();
+        document.onkeydown = desabilitar;
+    }
+    e.preventDefault();
 }
 //---------------------------------------------------------------------------
 function searchMaze(y, x) {
@@ -236,4 +247,19 @@ function drawAnswer2() {
     ctx.clearRect(0, 0, width, width);
     //Loop through the maze array drawing the walls and the goal
     fillAllAnswer(blockSize, ctx);
+}
+
+function desabilitar() {
+    if (event.ctrlKey) {
+        switch(window.event.keyCode) {
+            case 38:
+            case 40:
+            case 37:
+            case 39:
+            event.keyCode = 0;
+                return false;
+            default:
+            break;
+        }
+    }
 }
