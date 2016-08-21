@@ -50,7 +50,7 @@ function soundTrack(src){
     myAudio.play();
 }
 //-----------------------------------------------------------------
-var canvas,leftRight = 25.2,upDown = 4;
+var canvas,leftRight = 18.6,upDown = 5;
 var myAudio;
 var maze = [];
 window.onload = function () {
@@ -127,7 +127,7 @@ function press(e) {
   switch(e.which){
     case 38:
     if(canMove(player.x, player.y-1)){
-        upDown -= 0.6;
+        upDown -= 0.743;
         document.getElementById("Arti").style.marginTop = upDown+"%";
       player.y--;
     }else{
@@ -137,7 +137,7 @@ function press(e) {
 
     case 40:
     if(canMove(player.x, player.y+1)){
-        upDown += 0.6;
+        upDown += 0.743;
         document.getElementById("Arti").style.marginTop = upDown+"%";
       player.y++;
     }else{
@@ -148,7 +148,7 @@ function press(e) {
     case 37:
     if(canMove(player.x-1, player.y)){
       player.x--;
-      leftRight -=0.578;
+      leftRight -=0.731;
       document.getElementById("Arti").style.marginLeft = leftRight+"%";
     }else{
       hit.play();
@@ -158,7 +158,7 @@ function press(e) {
     case 39:
     if(canMove(player.x+1, player.y)){
       player.x++;
-      leftRight +=0.578;
+      leftRight +=0.731;
       document.getElementById("Arti").style.marginLeft = leftRight+"%";
     }else{
       hit.play();
