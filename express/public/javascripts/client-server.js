@@ -121,7 +121,7 @@ function press(e) {
     case 38:
     if(canMove(player.x, player.y-1)){
         upDown -= 10;
-        document.getElementById("Arti").style.marginTop = upDown+"px";
+        document.getElementById("Arti").style.paddingTop = upDown+"px";
       player.y--;
     }else{
     hit.play();
@@ -131,7 +131,7 @@ function press(e) {
     case 40:
     if(canMove(player.x, player.y+1)){
         upDown += 10;
-        document.getElementById("Arti").style.marginTop = upDown+"px";
+        document.getElementById("Arti").style.paddingTop = upDown+"px";
       player.y++;
     }else{
       hit.play();
@@ -142,7 +142,7 @@ function press(e) {
     if(canMove(player.x-1, player.y)){
       player.x--;
       leftRight -=10;
-      document.getElementById("Arti").style.marginLeft = leftRight+"px";
+      document.getElementById("Arti").style.paddingLeft = leftRight+"px";
     }else{
       hit.play();
     }
@@ -152,7 +152,7 @@ function press(e) {
     if(canMove(player.x+1, player.y)){
       player.x++;
       leftRight +=10;
-      document.getElementById("Arti").style.marginLeft = leftRight+"px";
+      document.getElementById("Arti").style.paddingLeft = leftRight+"px";
     }else{
       hit.play();
     }
@@ -163,7 +163,8 @@ var win,dab = new sound('/sound/dab.mp3'),ctx = canvas[0].getContext('2d');
     enviaDatos(player.x, player.y);
     draw();
     if(player.x == 79 && player.y ==59){
-        win = new Image(),win.src ='/images/youwin.jpg';
+        win = new Image();
+        win.src ='/images/youwin.jpg';
         ctx.drawImage(win,0,0);
         ctx.stroke();
     }
@@ -171,7 +172,8 @@ var win,dab = new sound('/sound/dab.mp3'),ctx = canvas[0].getContext('2d');
     if(player.x==80 && player.y==59){
         music.stop();
         dab.play();
-        win = new Image(),win.src ='/images/youwin.jpg';
+        win = new Image();
+        win.src ='/images/youwin.jpg';
         ctx.drawImage(win,0,0);
         ctx.stroke();
         empezarDetener(this);
@@ -214,6 +216,8 @@ function searchMaze(y, x) {
 //--------------------------------------------------RESPUESTA MARCADA-------------------------------------------------------------
 function fillAllAnswer(blockSize, ctx) {
     function fillItAnswer(y, x) {
+        var win;
+
         if (x < maze[y].length) {
             switch (maze[y][x]) {
                 case 0:
@@ -237,7 +241,7 @@ function fillAllAnswer(blockSize, ctx) {
 
 function drawAnswer() {
     maze = searchMaze(0, 1);
-    console.log(JSON.stringify(maze));
+    dab = new sound('/sound/aplauso.mp3');
     var width = canvas.width();
     var blockSize = width / ((maze.length) + 20);
     var ctx = canvas[0].getContext('2d');
@@ -245,6 +249,14 @@ function drawAnswer() {
     ctx.clearRect(0, 0, width, width);
     //Loop through the maze array drawing the walls and the goal
     fillAllAnswer(blockSize, ctx);
+    if(player.x==80 && player.y==59){
+        music.stop();
+        dab.play();
+        empezarDetener(this);
+        document.getElementById("Arti").style.paddingLeft = "1200px";
+        document.getElementById("Arti").style.paddingTop = "650px";
+        document.onkeydown = desabilitar;
+    }
 }
 
 function drawAnswer2() {
