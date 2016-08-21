@@ -37,6 +37,12 @@ body {
 h1{
   font-family:cursive;
   font-size: 200%;
+  display: inline-block;
+}
+
+h2{
+
+  display: inline-block;
 }
 
 #Articuno{
@@ -45,6 +51,6 @@ h1{
 }
 
 #Arti{
-  margin-top: 45px;;
+  margin-top: 65px;
   margin-left: 420px;
 }

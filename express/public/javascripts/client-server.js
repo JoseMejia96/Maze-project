@@ -42,12 +42,13 @@ function sound(src) {
 }
 
 //-----------------------------------------------------------------
-var canvas,leftRight = 420,upDown = 45;
+var canvas,leftRight = 420,upDown = 65;
 var music;
 var maze = [];
 window.onload = function () {
     Laberinto();
     canvas = $('#Maze');
+    empezarDetener(this);
     music = new sound('/sound/back.mp3');
     music.play();
     document.onkeydown = press;
@@ -173,6 +174,7 @@ var win,dab = new sound('/sound/dab.mp3'),ctx = canvas[0].getContext('2d');
         win = new Image(),win.src ='/images/youwin.jpg';
         ctx.drawImage(win,0,0);
         ctx.stroke();
+        empezarDetener(this);
         document.onkeydown = desabilitar;
     }
     e.preventDefault();
@@ -271,3 +273,50 @@ function desabilitar() {
         }
     }
 }
+
+//-----------------------Cronometro
+var inicio=0;
+var timeout=0;
+
+	function empezarDetener(elemento)
+	{
+		if(timeout==0)
+		{
+			// empezar el cronometro
+
+			elemento.value="Detener";
+
+			// Obtenemos el valor actual
+			inicio=vuelta=new Date().getTime();
+
+			// iniciamos el proceso
+			funcionando();
+		}else{
+			// detemer el cronometro
+
+			elemento.value="Empezar";
+			clearTimeout(timeout);
+			timeout=0;
+		}
+	}
+
+	function funcionando()
+	{
+		// obteneos la fecha actual
+		var actual = new Date().getTime();
+
+		// obtenemos la diferencia entre la fecha actual y la de inicio
+		var diff=new Date(actual-inicio);
+
+		// mostramos la diferencia entre la fecha actual y la inicial
+		var result=LeadingZero(diff.getUTCHours())+":"+LeadingZero(diff.getUTCMinutes())+":"+LeadingZero(diff.getUTCSeconds());
+		document.getElementById('crono').innerHTML = result;
+
+		// Indicamos que se ejecute esta función nuevamente dentro de 1 segundo
+		timeout=setTimeout("funcionando()",1000);
+	}
+
+	/* Funcion que pone un 0 delante de un valor si es necesario */
+	function LeadingZero(Time) {
+		return (Time < 10) ? "0" + Time : + Time;
+	}
