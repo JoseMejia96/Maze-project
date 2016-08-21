@@ -51,7 +51,7 @@ function soundTrack(src){
 }
 //-----------------------------------------------------------------
 var canvas,leftRight = 25.2,upDown = 4;
-var music;
+var myAudio;
 var maze = [];
 window.onload = function () {
     Laberinto();
@@ -128,7 +128,7 @@ function press(e) {
     case 38:
     if(canMove(player.x, player.y-1)){
         upDown -= 0.6;
-        document.getElementById("Arti").style.paddingTop = upDown+"%";
+        document.getElementById("Arti").style.marginTop = upDown+"%";
       player.y--;
     }else{
     hit.play();
@@ -138,7 +138,7 @@ function press(e) {
     case 40:
     if(canMove(player.x, player.y+1)){
         upDown += 0.6;
-        document.getElementById("Arti").style.paddingTop = upDown+"%";
+        document.getElementById("Arti").style.marginTop = upDown+"%";
       player.y++;
     }else{
       hit.play();
@@ -149,7 +149,7 @@ function press(e) {
     if(canMove(player.x-1, player.y)){
       player.x--;
       leftRight -=0.578;
-      document.getElementById("Arti").style.paddingLeft = leftRight+"%";
+      document.getElementById("Arti").style.marginLeft = leftRight+"%";
     }else{
       hit.play();
     }
@@ -159,7 +159,7 @@ function press(e) {
     if(canMove(player.x+1, player.y)){
       player.x++;
       leftRight +=0.578;
-      document.getElementById("Arti").style.paddingLeft = leftRight+"%";
+      document.getElementById("Arti").style.marginLeft = leftRight+"%";
     }else{
       hit.play();
     }
@@ -177,7 +177,7 @@ var win,dab = new sound('/sound/dab.mp3'),ctx = canvas[0].getContext('2d');
     }
 
     if(player.x==80 && player.y==59){
-        music.stop();
+        myAudio.pause();
         dab.play();
         win = new Image();
         win.src ='/images/youwin.jpg';
@@ -257,11 +257,11 @@ function drawAnswer() {
     //Loop through the maze array drawing the walls and the goal
     fillAllAnswer(blockSize, ctx);
     if(player.x==80 && player.y==59){
-        music.stop();
+        myAudio.pause();
         dab.play();
         empezarDetener(this);
-        document.getElementById("Arti").style.paddingLeft = "1200px";
-        document.getElementById("Arti").style.paddingTop = "650px";
+        document.getElementById("Arti").style.marginLeft = "71%";
+        document.getElementById("Arti").style.marginTop = "38%";
         document.onkeydown = desabilitar;
     }
 }
