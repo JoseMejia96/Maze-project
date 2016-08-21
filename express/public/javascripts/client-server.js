@@ -116,22 +116,14 @@ function canMove(x, y) {
 
 
 function press(e) {
-<<<<<<< HEAD
-     if((e.which == 38) && canMove(player.x, player.y - 1))
-        player.y--;
-    else if ((e.which == 40) && canMove(player.x, player.y + 1)) // down arrow
-        player.y++;
-    else if ((e.which == 37) && canMove(player.x - 1, player.y))
-        player.x--;
-    else if ((e.which == 39) && canMove(player.x + 1, player.y))
-        player.x++;
-=======
+    var hit = new sound('/sound/audio.wav');
+
   switch(e.which){
     case 38:
     if(canMove(player.x, player.y-1)){
       player.y--;
     }else{
-    document.getElementById('audiotag1').play();
+    hit.play();
     }
     break;
 
@@ -139,7 +131,7 @@ function press(e) {
     if(canMove(player.x, player.y+1)){
       player.y++;
     }else{
-      document.getElementById('audiotag1').play();
+      hit.play();
     }
     break;
 
@@ -147,7 +139,7 @@ function press(e) {
     if(canMove(player.x-1, player.y)){
       player.x--;
     }else{
-      document.getElementById('audiotag1').play();
+      hit.play();
     }
     break;
 
@@ -155,13 +147,11 @@ function press(e) {
     if(canMove(player.x+1, player.y)){
       player.x++;
     }else{
-      document.getElementById('audiotag1').play();
+      hit.play();
     }
     break;
 
   }
-
->>>>>>> 889d245bfe5c51f4d583c5071e565e75e59f7986
 
     enviaDatos(player.x, player.y);
     draw();
@@ -183,10 +173,6 @@ function searchMaze(y, x) {
                     maze[y][x] = 5;
                     player.y = y;
                     player.x = x;
-<<<<<<< HEAD
-                    //draw();
-=======
->>>>>>> 889d245bfe5c51f4d583c5071e565e75e59f7986
                     if ((x == 80) && (y == 59)) {
                         console.log("Yuhu!, i have found the way out!");
                         sol = copy.map((arr) => arr.slice());
