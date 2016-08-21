@@ -50,7 +50,7 @@ function soundTrack(src){
     myAudio.play();
 }
 //-----------------------------------------------------------------
-var canvas,leftRight = 420,upDown = 65;
+var canvas,leftRight = 25.2,upDown = 4;
 var music;
 var maze = [];
 window.onload = function () {
@@ -110,7 +110,7 @@ function draw() {
         //Draw the player
         ctx.beginPath();
         half = blockSize / 2;
-        ctx.fillStyle = "white";
+        ctx.fillStyle = "red";
         ctx.arc(player.x * blockSize + half, player.y * blockSize + half, half, 0, 2 * Math.PI);
         ctx.fill();
 }
@@ -127,8 +127,8 @@ function press(e) {
   switch(e.which){
     case 38:
     if(canMove(player.x, player.y-1)){
-        upDown -= 10;
-        document.getElementById("Arti").style.paddingTop = upDown+"px";
+        upDown -= 0.6;
+        document.getElementById("Arti").style.paddingTop = upDown+"%";
       player.y--;
     }else{
     hit.play();
@@ -137,8 +137,8 @@ function press(e) {
 
     case 40:
     if(canMove(player.x, player.y+1)){
-        upDown += 10;
-        document.getElementById("Arti").style.paddingTop = upDown+"px";
+        upDown += 0.6;
+        document.getElementById("Arti").style.paddingTop = upDown+"%";
       player.y++;
     }else{
       hit.play();
@@ -148,8 +148,8 @@ function press(e) {
     case 37:
     if(canMove(player.x-1, player.y)){
       player.x--;
-      leftRight -=10;
-      document.getElementById("Arti").style.paddingLeft = leftRight+"px";
+      leftRight -=0.578;
+      document.getElementById("Arti").style.paddingLeft = leftRight+"%";
     }else{
       hit.play();
     }
@@ -158,8 +158,8 @@ function press(e) {
     case 39:
     if(canMove(player.x+1, player.y)){
       player.x++;
-      leftRight +=10;
-      document.getElementById("Arti").style.paddingLeft = leftRight+"px";
+      leftRight +=0.578;
+      document.getElementById("Arti").style.paddingLeft = leftRight+"%";
     }else{
       hit.play();
     }
