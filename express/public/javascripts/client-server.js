@@ -110,7 +110,7 @@ function draw() {
         //Draw the player
         ctx.beginPath();
         half = blockSize / 2;
-        ctx.fillStyle = "red";
+        ctx.fillStyle = "white";
         ctx.arc(player.x * blockSize + half, player.y * blockSize + half, half, 0, 2 * Math.PI);
         ctx.fill();
 }
@@ -127,7 +127,7 @@ function press(e) {
   switch(e.which){
     case 38:
     if(canMove(player.x, player.y-1)){
-        upDown -= 0.6;
+        upDown -= 0.578;
         document.getElementById("Arti").style.marginTop = upDown+"%";
       player.y--;
     }else{
@@ -137,7 +137,7 @@ function press(e) {
 
     case 40:
     if(canMove(player.x, player.y+1)){
-        upDown += 0.6;
+        upDown += 0.578;
         document.getElementById("Arti").style.marginTop = upDown+"%";
       player.y++;
     }else{
