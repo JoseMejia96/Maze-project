@@ -50,7 +50,7 @@ function soundTrack(src){
     myAudio.play();
 }
 //-----------------------------------------------------------------
-var canvas,leftRight = 25.2,upDown = 4;
+var canvas,leftRight = 25.1,upDown =  4;
 var myAudio;
 var maze = [];
 window.onload = function () {
@@ -110,7 +110,7 @@ function draw() {
         //Draw the player
         ctx.beginPath();
         half = blockSize / 2;
-        ctx.fillStyle = "white";
+        ctx.fillStyle = "red";
         ctx.arc(player.x * blockSize + half, player.y * blockSize + half, half, 0, 2 * Math.PI);
         ctx.fill();
 }
