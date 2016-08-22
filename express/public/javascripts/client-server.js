@@ -50,7 +50,7 @@ function soundTrack(src){
     myAudio.play();
 }
 //-----------------------------------------------------------------
-var canvas,leftRight = 25.1,upDown =  4;
+var canvas,leftRight = 0.6 ,upDown =  4.3;
 var myAudio;
 var maze = [];
 window.onload = function () {
