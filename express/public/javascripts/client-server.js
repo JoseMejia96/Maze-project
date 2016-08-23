@@ -110,7 +110,8 @@ function draw() {
         //Draw the player
         ctx.beginPath();
         half = blockSize / 2;
-        ctx.fillStyle = "white";
+
+        ctx.fillStyle="red";
         ctx.arc(player.x * blockSize + half, player.y * blockSize + half, half, 0, 2 * Math.PI);
         ctx.fill();
 }
@@ -122,13 +123,11 @@ function canMove(x, y) {
 
 
 function press(e) {
-    var hit = new sound('/sound/Articuno.ogg');
+    var hit = new sound('/sound/Boing.mp3');
 
   switch(e.which){
     case 38:
     if(canMove(player.x, player.y-1)){
-        upDown -= 1.178;
-        document.getElementById("Arti").style.marginTop = upDown+"%";
       player.y--;
     }else{
     hit.play();
@@ -137,8 +136,6 @@ function press(e) {
 
     case 40:
     if(canMove(player.x, player.y+1)){
-        upDown +=1.178;
-        document.getElementById("Arti").style.marginTop = upDown+"%";
       player.y++;
     }else{
       hit.play();
@@ -148,8 +145,6 @@ function press(e) {
     case 37:
     if(canMove(player.x-1, player.y)){
       player.x--;
-      leftRight -=1.178;
-      document.getElementById("Arti").style.marginLeft = leftRight+"%";
     }else{
       hit.play();
     }
@@ -158,8 +153,6 @@ function press(e) {
     case 39:
     if(canMove(player.x+1, player.y)){
       player.x++;
-      leftRight +=1.178;
-      document.getElementById("Arti").style.marginLeft = leftRight+"%";
     }else{
       hit.play();
     }

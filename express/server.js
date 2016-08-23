@@ -1,71 +1,44 @@
-var express = require('express'),
- http = require('http'),
- path = require('path'),
- favicon = require('static-favicon'),
- logger = require('morgan'),
- cookieParser = require('cookie-parser'),
- bodyParser = require('body-parser');
+var express    = require('express');
+var bodyParser = require('body-parser');
+var app        = express();
+var morgan     = require('morgan');
 
-var routes = require('./routes'),
-users = require('./routes/user'),
-mongoose   = require('mongoose');
-mongoose.connect('mongodb://localhost/MazeDB');
-var mazeModel = require('./modelo/modelo');
-var app = express();
+app.use(morgan('dev'));
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-
-app.use(favicon());
-app.use(logger('dev'));
-app.use(bodyParser.json());
+// configure body parser
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(require('less-middleware')({ src: path.join(__dirname, 'public') }));
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(app.router);
+app.use(bodyParser.json());
 
-app.get('/', routes.index);
-app.get('/users', users.list);
+var port     = process.env.PORT || 3000;
 
-/// catch 404 and forwarding to error handler
-app.use(function (req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+var mongoose   = require('mongoose');
+mongoose.connect('mongodb://localhost/MazeDB');
+var Bear     = require('./modelo/modelo');
+
+
+var router = express.Router();
+
+
+router.use(function(req, res, next) {
+	// do logging
+	console.log('Something is happening.');
+	next();
 });
 
-/// error handlers
-
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-    app.use(function (err, req, res, next) {
-        res.render('error', {
-            message: err.message,
-            error: err
-        });
-    });
-}
-
-// production error handler
-// no stacktraces leaked to user
-app.use(function (err, req, res, next) {
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
+app.use(express.static('public'));
+app.use(express.static('views'));
+router.get('/', function(req, res) {
 });
 
-app.post('/generaMaze', function (req, res) {
+
+// ----------------------------------------------------
+app.post("/generaMaze",function (req, res) {
     res.send(JSON.stringify(DrawMaze()));
 });
 
-	// create a maze (accessed at POST http://localhost:3000/mazes)
-	app.post('/insert',function(req, res) {
-		var maze = new mazeModel();		// create a new instance of the maze model
-		maze.x = req.body.x,  // set the mazes name (comes from the request)
+app.post("/insert",function(req, res) {
+		var maze = new mazeModel();
+		maze.x = req.body.x,
     maze.y = req.body.y;
 		maze.save(err=> {
 			if (err)
@@ -143,3 +116,14 @@ function DrawMaze() {
 	console.log("Dibujando!!")
 	return GenerateMaze(maze(30, 40));
 }
+
+
+// REGISTER OUR ROUTES -------------------------------
+app.use('/api', router);
+
+// START THE SERVER
+// =============================================================================
+app.listen(port);
+console.log('Magic happens on port ' + port);
+
+module.exports = app;
