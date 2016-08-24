@@ -11,9 +11,9 @@ app.use(bodyParser.json());
 
 var port     = process.env.PORT || 3000;
 
-var mongoose   = require('mongoose');
+var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/MazeDB');
-var Bear     = require('./modelo/modelo');
+var Maze = require('./modelo/model');
 
 
 var router = express.Router();
@@ -36,19 +36,26 @@ app.post("/generaMaze",function (req, res) {
     res.send(JSON.stringify(DrawMaze()));
 });
 
-app.post("/insert",function(req, res) {
-		var maze = new mazeModel();
-		maze.x = req.body.x,
-    maze.y = req.body.y;
-		maze.save(err=> {
-			if (err)
-				res.send(err);
-            console.log('Post ' + err);
-			res.json({ message: 'maze created!', "mazeId" : maze._id});
-		});
-	})
+router.route('/MazeDB')
+.post(function(req, res) {
+	console.log(req.body);
+		var maze = new Maze();
+		maze.x = req.body.x;
+		maze.y = req.body.y;
+		maze.save(function(err){
+			if(err)
+				console.log(err);
+			});
+		})
 
-module.exports = app;
+		.get(function(req, res) {
+			Maze.find(function(err, maze) {
+				if (err)
+					res.send(err);
+
+				res.json(maze);
+			});
+		});
 
 //-----------------------maze------------------
 function maze(x, y) {
@@ -74,7 +81,6 @@ function maze(x, y) {
 		if (neighbors.length) {
 			n = n - 1;
 			next = neighbors[Math.floor(Math.random() * neighbors.length)];
-			console.log(next);
 			unvisited[next[0] + 1][next[1] + 1] = false;
 			if (next[0] == here[0])
 				horiz[next[0]][(next[1] + here[1] - 1) / 2] = true;

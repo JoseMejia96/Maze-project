@@ -19,9 +19,9 @@ function enviaDatos(x, y) {
         type: 'POST',
         data: data,
         ontentType: 'application/json',
-        url: 'http://localhost:3000/insert',
+        url: 'http://localhost:3000/api/MazeDB',
         success: function (data) {
-            console.log(data.done);
+            console.log(data);
         }
     });
 }
