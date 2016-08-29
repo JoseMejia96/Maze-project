@@ -1,30 +1,19 @@
+
 //-------------AJAX---------------------------------------
-function Laberinto() {
-    var data = {};
-    $.ajax({
-        type: 'POST',
-        contentType: 'application/json',
-        url: 'http://localhost:3000/generaMaze',
-        success: function (data) {
-            maze = jsonMaze(JSON.parse(data));
-            draw();
-            console.log('success');
-        }
-    });
-}
+
+let creatMaze = fetch('http://localhost:3000/generaMaze', { method: 'POST', body: 'a=1' })
+   .then(function(res) {
+       return res.json();
+   }).then(function(json) {
+       console.log(json);
+       maze = jsonMaze(json);
+       draw();
+       console.log('success');
+   });
 //---------------------------------------------------------------
-function enviaDatos(x, y) {
-    var data = { x: x, y: y };
-    $.ajax({
-        type: 'POST',
-        data: data,
-        ontentType: 'application/json',
-        url: 'http://localhost:3000/api/MazeDB',
-        success: function (data) {
-            console.log(data);
-        }
-    });
-}
+
+let insertDB = (x, y)=> fetch('http://localhost:3000/api/MazeDB', { method: 'POST', body:  JSON.stringify({x : x, y : y}) } );
+
 //----------------------Audio fondo
 function sound(src) {
     this.sound = document.createElement("audio");
@@ -54,7 +43,7 @@ var canvas,leftRight = 1.2 ,upDown =  -1.8;
 var myAudio;
 var maze = [];
 window.onload = function () {
-    Laberinto();
+    creatMaze;
     canvas = $('#Maze');
     empezarDetener(this);
     soundTrack('/sound/back.mp3');
@@ -160,7 +149,7 @@ function press(e) {
 
   }
 var win,dab = new sound('/sound/dab.mp3'),ctx = canvas[0].getContext('2d');
-    enviaDatos(player.x, player.y);
+    insertDB(player.x, player.y);
     draw();
     if(player.x == 79 && player.y ==59){
         win = new Image();
