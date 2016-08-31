@@ -1,19 +1,34 @@
+//-------------VARIABLES NECESARIAS------------------------
 
-//-------------AJAX---------------------------------------
+var canvas,leftRight = 1.2 ,upDown =  -1.8;
+var myAudio;
+var maze = [];
+//-----------------------Cronometro
+var inicio=0;
+var timeout=0;
 
-let creatMaze = fetch('http://localhost:3000/generaMaze', { method: 'POST', body: 'a=1' })
-   .then(function(res) {
-       return res.json();
-   }).then(function(json) {
-       console.log(json);
-       maze = jsonMaze(json);
-       draw();
-       console.log('success');
+//-------------FETCH---------------------------------------
+
+let Laber = z => fetch('http://localhost:3000/generaMaze', {
+    method: 'POST',
+    headers: {"Content-type": "application/json; charset=UTF-8"}
+  })
+   .then(function(response){
+       return response.json()
+       .then(function(json){
+         maze = jsonMaze(json);
+         draw();
+         console.log('success');
+       });
    });
+
+let enviaDatos = (x,y) => fetch('http://localhost:3000/api/MazeDB', {
+       method: 'POST',
+       headers: {"Content-type": "application/json; charset=UTF-8"},
+       body:  JSON.stringify({x : x, y : y})
+     })
+
 //---------------------------------------------------------------
-
-let insertDB = (x, y)=> fetch('http://localhost:3000/api/MazeDB', { method: 'POST', body:  JSON.stringify({x : x, y : y}) } );
-
 //----------------------Audio fondo
 function sound(src) {
     this.sound = document.createElement("audio");
@@ -39,11 +54,9 @@ function soundTrack(src){
     myAudio.play();
 }
 //-----------------------------------------------------------------
-var canvas,leftRight = 1.2 ,upDown =  -1.8;
-var myAudio;
-var maze = [];
+
 window.onload = function () {
-    creatMaze;
+    Laber();
     canvas = $('#Maze');
     empezarDetener(this);
     soundTrack('/sound/back.mp3');
@@ -94,9 +107,7 @@ function draw() {
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.clearRect(0, 0, width, width);
         ctx.fillStyle = "black";
-        //Loop through the maze array drawing the walls and the goal
         fillAll(blockSize, ctx);
-        //Draw the player
         ctx.beginPath();
         half = blockSize / 2;
 
@@ -113,43 +124,22 @@ function canMove(x, y) {
 
 function press(e) {
     var hit = new sound('/sound/Boing.mp3');
-
-  switch(e.which){
+    var win,dab = new sound('/sound/dab.mp3'),ctx = canvas[0].getContext('2d');
+    switch(e.which){
     case 38:
-    if(canMove(player.x, player.y-1)){
-      player.y--;
-    }else{
-    hit.play();
-    }
+    canMove(player.x, player.y-1) ? player.y-- : hit.play();
     break;
-
     case 40:
-    if(canMove(player.x, player.y+1)){
-      player.y++;
-    }else{
-      hit.play();
-    }
+    canMove(player.x, player.y+1) ? player.y++ : hit.play();
     break;
-
     case 37:
-    if(canMove(player.x-1, player.y)){
-      player.x--;
-    }else{
-      hit.play();
-    }
+    canMove(player.x-1, player.y) ? player.x-- : hit.play();
     break;
-
     case 39:
-    if(canMove(player.x+1, player.y)){
-      player.x++;
-    }else{
-      hit.play();
-    }
+    canMove(player.x+1, player.y) ? player.x++ : hit.play();
     break;
-
-  }
-var win,dab = new sound('/sound/dab.mp3'),ctx = canvas[0].getContext('2d');
-    insertDB(player.x, player.y);
+    }
+    enviaDatos(player.x, player.y);
     draw();
     if(player.x == 79 && player.y ==59){
         win = new Image();
@@ -205,8 +195,6 @@ function searchMaze(y, x) {
 //--------------------------------------------------RESPUESTA MARCADA-------------------------------------------------------------
 function fillAllAnswer(blockSize, ctx) {
     function fillItAnswer(y, x) {
-        var win;
-
         if (x < maze[y].length) {
             switch (maze[y][x]) {
                 case 0:
@@ -242,8 +230,6 @@ function drawAnswer() {
         myAudio.pause();
         dab.play();
         empezarDetener(this);
-        document.getElementById("Arti").style.marginLeft = "71%";
-        document.getElementById("Arti").style.marginTop = "38%";
         document.onkeydown = desabilitar;
     }
 }
@@ -275,45 +261,25 @@ function desabilitar() {
     }
 }
 
-//-----------------------Cronometro
-var inicio=0;
-var timeout=0;
 
-	function empezarDetener(elemento)
-	{
-		if(timeout==0)
-		{
-			// empezar el cronometro
 
+function empezarDetener(elemento){
+		if(timeout==0){
 			elemento.value="Detener";
-
-			// Obtenemos el valor actual
 			inicio=vuelta=new Date().getTime();
-
-			// iniciamos el proceso
 			funcionando();
 		}else{
-			// detemer el cronometro
-
 			elemento.value="Empezar";
 			clearTimeout(timeout);
 			timeout=0;
 		}
 	}
 
-	function funcionando()
-	{
-		// obteneos la fecha actual
+	function funcionando(){
 		var actual = new Date().getTime();
-
-		// obtenemos la diferencia entre la fecha actual y la de inicio
 		var diff=new Date(actual-inicio);
-
-		// mostramos la diferencia entre la fecha actual y la inicial
 		var result=LeadingZero(diff.getUTCHours())+":"+LeadingZero(diff.getUTCMinutes())+":"+LeadingZero(diff.getUTCSeconds());
 		document.getElementById('crono').innerHTML = result;
-
-		// Indicamos que se ejecute esta función nuevamente dentro de 1 segundo
 		timeout=setTimeout("funcionando()",1000);
 	}
 

@@ -38,7 +38,8 @@ app.post("/generaMaze",function (req, res) {
 
 router.route('/MazeDB')
 .post(function(req, res) {
-	console.log("body"+req.body);
+	console.log(req.body);
+	//console.log("body"+req.body);
 		var maze = new Maze();
 		maze.x = req.body.x;
 		maze.y = req.body.y;
