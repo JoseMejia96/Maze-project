@@ -1,32 +1,52 @@
 //-------------VARIABLES NECESARIAS------------------------
 
-var canvas,leftRight = 1.2 ,upDown =  -1.8;
+var canvas, leftRight = 1.2, upDown = -1.8;
 var myAudio;
 var maze = [];
 //-----------------------Cronometro
-var inicio=0;
-var timeout=0;
+var inicio = 0;
+var timeout = 0;
 
 //-------------FETCH---------------------------------------
 
-let Laber = z => fetch('http://localhost:3000/generaMaze', {
+let getLaber = (x) => fetch('http://localhost:3000/api/generaMaze', {
     method: 'POST',
-    headers: {"Content-type": "application/json; charset=UTF-8"}
-  })
-   .then(function(response){
-       return response.json()
-       .then(function(json){
-         maze = jsonMaze(json);
-         draw();
-         console.log('success');
-       });
-   });
+    headers: { "Content-type": "application/json; charset=UTF-8" },
+    body: JSON.stringify({ size: x })
+}).then(function (response) {
+    return response.json()
+        .then(function (json) {
+            maze = jsonMaze(json);
+            draw();
+            console.log('Maze is done!!');
+        });
+}).catch(function (error) {
+    console.log('Request failed', error);
+});
 
-let enviaDatos = (x,y) => fetch('http://localhost:3000/api/MazeDB', {
-       method: 'POST',
-       headers: {"Content-type": "application/json; charset=UTF-8"},
-       body:  JSON.stringify({x : x, y : y})
-     })
+//-----------------------------------------------------------------
+/*let Laber = () => fetch('http://localhost:3000/generaMaze', {
+    method: 'POST',
+    headers: { "Content-type": "application/json; charset=UTF-8" }
+})
+    .then(function (response) {
+        return response.json()
+            .then(function (json) {
+                maze = jsonMaze(json);
+                draw();
+                console.log('success');
+            });
+    }).catch(function (error) {
+        console.log('Request failed', error);
+    });*/
+
+let enviaDatos = (x, y) => fetch('http://localhost:3000/api/MazeDB', {
+    method: 'POST',
+    headers: { "Content-type": "application/json; charset=UTF-8" },
+    body: JSON.stringify({ x: x, y: y })
+}).catch(function (error) {
+    console.log('Request failed', error);
+});
 
 //---------------------------------------------------------------
 //----------------------Audio fondo
@@ -37,17 +57,17 @@ function sound(src) {
     this.sound.setAttribute("controls", "none");
     this.sound.style.display = "none";
     document.body.appendChild(this.sound);
-    this.play = function(){
-            this.sound.play();
-        }
-    this.stop = function(){
+    this.play = function () {
+        this.sound.play();
+    }
+    this.stop = function () {
         this.sound.pause();
     }
 }
 
-function soundTrack(src){
+function soundTrack(src) {
     myAudio = new Audio(src);
-    myAudio.addEventListener('ended', function() {
+    myAudio.addEventListener('ended', function () {
         this.currentTime = 0;
         this.play();
     }, false);
@@ -56,7 +76,7 @@ function soundTrack(src){
 //-----------------------------------------------------------------
 
 window.onload = function () {
-    Laber();
+    getLaber(3);
     canvas = $('#Maze');
     empezarDetener(this);
     soundTrack('/sound/back.mp3');
@@ -77,7 +97,7 @@ var player = {
 function fillAll(blockSize, ctx) {
     function fillIt(y, x) {
         if (x < maze[y].length) {
-            (maze[y][x] === 1) ? (ctx.fillStyle = "black",ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize)) : (
+            (maze[y][x] === 1) ? (ctx.fillStyle = "black", ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize)) : (
                 (maze[y][x] === -1) ? (
                     ctx.beginPath(),
                     ctx.lineWidth = 5,
@@ -86,10 +106,10 @@ function fillAll(blockSize, ctx) {
                     ctx.lineTo((x + 1) * blockSize, (y + 1) * blockSize),
                     ctx.moveTo(x * blockSize, (y + 1) * blockSize),
                     ctx.lineTo((x + 1) * blockSize, y * blockSize),
-                    ctx.stroke()) : (maze[y][x]===5)?
-                    (ctx.fillStyle = "yellow",
-                    ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize)):0
-                  );
+                    ctx.stroke()) : (maze[y][x] === 5) ?
+                        (ctx.fillStyle = "yellow",
+                            ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize)) : 0
+            );
             fillIt(y, x + 1);
         } else if (y < maze.length - 1) {
             fillIt(y + 1, 0);
@@ -104,16 +124,16 @@ function draw() {
     var half;
     var blockSize = width / ((maze.length) + 20);
     var ctx = canvas[0].getContext('2d');
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.clearRect(0, 0, width, width);
-        ctx.fillStyle = "black";
-        fillAll(blockSize, ctx);
-        ctx.beginPath();
-        half = blockSize / 2;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, width, width);
+    ctx.fillStyle = "black";
+    fillAll(blockSize, ctx);
+    ctx.beginPath();
+    half = blockSize / 2;
 
-        ctx.fillStyle="red";
-        ctx.arc(player.x * blockSize + half, player.y * blockSize + half, half, 0, 2 * Math.PI);
-        ctx.fill();
+    ctx.fillStyle = "red";
+    ctx.arc(player.x * blockSize + half, player.y * blockSize + half, half, 0, 2 * Math.PI);
+    ctx.fill();
 }
 
 //Check to see if the new space is inside the maze and not a wall
@@ -124,36 +144,36 @@ function canMove(x, y) {
 
 function press(e) {
     var hit = new sound('/sound/Boing.mp3');
-    var win,dab = new sound('/sound/dab.mp3'),ctx = canvas[0].getContext('2d');
-    switch(e.which){
-    case 38:
-    canMove(player.x, player.y-1) ? player.y-- : hit.play();
-    break;
-    case 40:
-    canMove(player.x, player.y+1) ? player.y++ : hit.play();
-    break;
-    case 37:
-    canMove(player.x-1, player.y) ? player.x-- : hit.play();
-    break;
-    case 39:
-    canMove(player.x+1, player.y) ? player.x++ : hit.play();
-    break;
+    var win, dab = new sound('/sound/dab.mp3'), ctx = canvas[0].getContext('2d');
+    switch (e.which) {
+        case 38:
+            canMove(player.x, player.y - 1) ? player.y-- : hit.play();
+            break;
+        case 40:
+            canMove(player.x, player.y + 1) ? player.y++ : hit.play();
+            break;
+        case 37:
+            canMove(player.x - 1, player.y) ? player.x-- : hit.play();
+            break;
+        case 39:
+            canMove(player.x + 1, player.y) ? player.x++ : hit.play();
+            break;
     }
     enviaDatos(player.x, player.y);
     draw();
-    if(player.x == 79 && player.y ==59){
+    if (player.x == 79 && player.y == 59) {
         win = new Image();
-        win.src ='/images/youwin.jpg';
-        ctx.drawImage(win,0,0);
+        win.src = '/images/youwin.jpg';
+        ctx.drawImage(win, 0, 0);
         ctx.stroke();
     }
 
-    if(player.x==80 && player.y==59){
+    if (player.x == 80 && player.y == 59) {
         myAudio.pause();
         dab.play();
         win = new Image();
-        win.src ='/images/youwin.jpg';
-        ctx.drawImage(win,0,0);
+        win.src = '/images/youwin.jpg';
+        ctx.drawImage(win, 0, 0);
         ctx.stroke();
         empezarDetener(this);
         document.onkeydown = desabilitar;
@@ -164,31 +184,32 @@ function press(e) {
 function searchMaze(y, x) {
     var sol;
     function searchMaze(y, x, m) {
-      if(!sol){
-        if (maze[y][x]!=5) {
-          var log1 =(x < 0) || (x > 80) || (y < 0) || (y > 59);
-            if (!log1) {
-                var log2 = m[y][x] == 1;
-                if (!log2) {
-                    var copy = m.map((arr) => arr.slice());
-                    copy[y][x] = 2;  // estoy bien
-                    maze[y][x] = 5;
-                    player.y = y;
-                    player.x = x;
-                    if ((x == 80) && (y == 59)) {
-                        console.log("Yuhu!, i have found the way out!");
-                        sol = copy.map((arr) => arr.slice());
-                        return sol;
-                    }
-                    searchMaze(y + 1, x, copy);   // abajo
-                    searchMaze(y, x + 1, copy);   // der
-                    searchMaze(y - 1, x, copy);   // arriba
-                    searchMaze(y, x - 1, copy);   // izq
+        if (!sol) {
+            if (maze[y][x] != 5) {
+                var log1 = (x < 0) || (x > 80) || (y < 0) || (y > 59);
+                if (!log1) {
+                    var log2 = m[y][x] == 1;
+                    if (!log2) {
+                        var copy = m.map((arr) => arr.slice());
+                        copy[y][x] = 2;  // estoy bien
+                        maze[y][x] = 5;
+                        player.y = y;
+                        player.x = x;
+                        if ((x == 80) && (y == 59)) {
+                            console.log("Yay!, I have found the way out!");
+                            sol = copy.map((arr) => arr.slice());
+                            return sol;
+                        }
+                        searchMaze(y + 1, x, copy);   // abajo
+                        searchMaze(y, x + 1, copy);   // der
+                        searchMaze(y - 1, x, copy);   // arriba
+                        searchMaze(y, x - 1, copy);   // izq
 
+                    }
                 }
             }
-        }
-    }else{return sol;}}
+        } else { return sol; }
+    }
     searchMaze(y, x, maze);
     return sol;
 }
@@ -226,7 +247,7 @@ function drawAnswer() {
     ctx.clearRect(0, 0, width, width);
     //Loop through the maze array drawing the walls and the goal
     fillAllAnswer(blockSize, ctx);
-    if(player.x==80 && player.y==59){
+    if (player.x == 80 && player.y == 59) {
         myAudio.pause();
         dab.play();
         empezarDetener(this);
@@ -248,42 +269,42 @@ function drawAnswer2() {
 
 function desabilitar() {
     if (event.ctrlKey) {
-        switch(window.event.keyCode) {
+        switch (window.event.keyCode) {
             case 38:
             case 40:
             case 37:
             case 39:
-            event.keyCode = 0;
+                event.keyCode = 0;
                 return false;
             default:
-            break;
+                break;
         }
     }
 }
 
 
 
-function empezarDetener(elemento){
-		if(timeout==0){
-			elemento.value="Detener";
-			inicio=vuelta=new Date().getTime();
-			funcionando();
-		}else{
-			elemento.value="Empezar";
-			clearTimeout(timeout);
-			timeout=0;
-		}
-	}
+function empezarDetener(elemento) {
+    if (timeout == 0) {
+        elemento.value = "Detener";
+        inicio = vuelta = new Date().getTime();
+        funcionando();
+    } else {
+        elemento.value = "Empezar";
+        clearTimeout(timeout);
+        timeout = 0;
+    }
+}
 
-	function funcionando(){
-		var actual = new Date().getTime();
-		var diff=new Date(actual-inicio);
-		var result=LeadingZero(diff.getUTCHours())+":"+LeadingZero(diff.getUTCMinutes())+":"+LeadingZero(diff.getUTCSeconds());
-		document.getElementById('crono').innerHTML = result;
-		timeout=setTimeout("funcionando()",1000);
-	}
+function funcionando() {
+    var actual = new Date().getTime();
+    var diff = new Date(actual - inicio);
+    var result = LeadingZero(diff.getUTCHours()) + ":" + LeadingZero(diff.getUTCMinutes()) + ":" + LeadingZero(diff.getUTCSeconds());
+    document.getElementById('crono').innerHTML = result;
+    timeout = setTimeout("funcionando()", 1000);
+}
 
-	/* Funcion que pone un 0 delante de un valor si es necesario */
-	function LeadingZero(Time) {
-		return (Time < 10) ? "0" + Time : + Time;
-	}
+/* Funcion que pone un 0 delante de un valor si es necesario */
+function LeadingZero(Time) {
+    return (Time < 10) ? "0" + Time : + Time;
+}

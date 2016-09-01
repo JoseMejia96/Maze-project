@@ -32,14 +32,16 @@ router.get('/', function(req, res) {
 
 
 // ----------------------------------------------------
-app.post("/generaMaze",function (req, res) {
-    res.send(JSON.stringify(DrawMaze()));
+/*app.post("/generaMaze",function (req, res) {
+    res.send(JSON.stringify(DrawMaze()));	sepa judas xq este estaba asi
+});*/
+
+router.route("/generaMaze").post(function (req, res) {
+	let s= req.body.size;
+    res.send(JSON.stringify(DrawMaze(s)));
 });
 
-router.route('/MazeDB')
-.post(function(req, res) {
-	console.log(req.body);
-	//console.log("body"+req.body);
+router.route('/MazeDB').post(function(req, res) {
 		var maze = new Maze();
 		maze.x = req.body.x;
 		maze.y = req.body.y;
@@ -61,6 +63,8 @@ router.route('/MazeDB')
 
 
 //-----------------------maze------------------
+size=[{x:30,y:40},{x:20,y:30},{x:10,y:20}];
+
 function maze(x, y) {
 	var n = x * y - 1;
 	if (n < 0) { alert("illegal maze dimensions"); return; }
@@ -121,9 +125,12 @@ function saveLine(line) {
 	return { linea: line };
 }
 
-function DrawMaze() {
-	console.log("Dibujando!!")
-	return GenerateMaze(maze(30, 40));
+function DrawMaze(s) {
+	console.log("Dibujando t= ",s);
+	x=size[3-s].x;
+	y=size[3-s].y;
+	console.log("x= ",x," y=",y);
+	return GenerateMaze(maze(x,y));
 }
 
 
