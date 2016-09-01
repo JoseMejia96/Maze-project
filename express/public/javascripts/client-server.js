@@ -17,7 +17,7 @@ let getLaberynth = (x) => fetch('http://localhost:3000/api/generaMaze', {
     method: 'POST',
     headers: { "Content-type": "application/json; charset=UTF-8" },
     body: JSON.stringify({ size: x })
-}).then(function (response) {
+    }).then(function (response) {
     return response.json()
         .then(function (json) {
             console.log(json);
@@ -65,15 +65,22 @@ function soundTrack(src) {
 //---------------------------ON LOAD--------------------------------------
 
 window.onload = function () {
-    getLaberynth(3);
-    //getLaberynth(2);
-    //getLaberynth(1);
-    canvas = $('#Maze');
-    empezarDetener(this);
     soundTrack('/sound/back.mp3');
     document.onkeydown = press;
-    
+
 }
+
+let Begin = () => (canvas = $('#Maze'), empezarDetener(this),
+document.getElementById("dificultades").style.display = "none",
+document.getElementById("wholePage").style.display = "block"
+);
+
+let Inicio = (a) => (a == 1) ? (Begin(),getLaberynth(1)) : (
+  (a == 2) ? (Begin(),getLaberynth(2)) : (
+    (a == 3) ? (Begin(),getLaberynth(3)) : 0 )
+);
+
+
 //-----------CHIFRIJO----------------------------------------------
 function jsonMaze(data) {
     var mazeTemp = [];

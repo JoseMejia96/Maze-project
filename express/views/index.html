@@ -7,7 +7,12 @@
 </head>
 
 <body>
-	<div id="wholePage">
+	<div id="dificultades">
+		<button class="button button1" onclick="Inicio(1)">Facil</button>
+		<button class="button button1" onclick="Inicio(2)">Medio</button>
+		<button class="button button1" onclick="Inicio(3)">Dificil</button>
+	</div>
+	<div id="wholePage" style = "display: none;">
 		<center>
 			<div id="encabezado">
 				<h1 id="titulo">Maze time: </h1>
@@ -15,7 +20,7 @@
 			</div>
 			<canvas id="Maze" width="800px" height="600px"></canvas>
 			<div id=botones>
-				
+
 				<button class="button button1" onclick="drawAnswer()">Solución inicial</button>
 				<button class="button button1" onclick="drawAnswer2()">Solución actual</button>
 			</div>
