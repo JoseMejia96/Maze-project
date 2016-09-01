@@ -3,42 +3,32 @@
 var canvas, leftRight = 1.2, upDown = -1.8;
 var myAudio;
 var maze = [];
+var player = {
+    x: 1,
+    y: 0
+};
 //-----------------------Cronometro
 var inicio = 0;
 var timeout = 0;
 
 //-------------FETCH---------------------------------------
 
-let getLaber = (x) => fetch('http://localhost:3000/api/generaMaze', {
+let getLaberynth = (x) => fetch('http://localhost:3000/api/generaMaze', {
     method: 'POST',
     headers: { "Content-type": "application/json; charset=UTF-8" },
     body: JSON.stringify({ size: x })
 }).then(function (response) {
     return response.json()
         .then(function (json) {
+            console.log(json);
             maze = jsonMaze(json);
+           // console.log("maze.length",maze.length,"maze[y].length",maze[1].length);
             draw();
             console.log('Maze is done!!');
         });
 }).catch(function (error) {
     console.log('Request failed', error);
 });
-
-//-----------------------------------------------------------------
-/*let Laber = () => fetch('http://localhost:3000/generaMaze', {
-    method: 'POST',
-    headers: { "Content-type": "application/json; charset=UTF-8" }
-})
-    .then(function (response) {
-        return response.json()
-            .then(function (json) {
-                maze = jsonMaze(json);
-                draw();
-                console.log('success');
-            });
-    }).catch(function (error) {
-        console.log('Request failed', error);
-    });*/
 
 let enviaDatos = (x, y) => fetch('http://localhost:3000/api/MazeDB', {
     method: 'POST',
@@ -48,8 +38,7 @@ let enviaDatos = (x, y) => fetch('http://localhost:3000/api/MazeDB', {
     console.log('Request failed', error);
 });
 
-//---------------------------------------------------------------
-//----------------------Audio fondo
+//----------------------Audio fondo-----------------
 function sound(src) {
     this.sound = document.createElement("audio");
     this.sound.src = src;
@@ -73,26 +62,25 @@ function soundTrack(src) {
     }, false);
     myAudio.play();
 }
-//-----------------------------------------------------------------
+//---------------------------ON LOAD--------------------------------------
 
 window.onload = function () {
-    getLaber(3);
+    getLaberynth(3);
+    //getLaberynth(2);
+    //getLaberynth(1);
     canvas = $('#Maze');
     empezarDetener(this);
     soundTrack('/sound/back.mp3');
     document.onkeydown = press;
+    
 }
-
+//-----------CHIFRIJO----------------------------------------------
 function jsonMaze(data) {
     var mazeTemp = [];
     data.forEach(x => mazeTemp.push(x.linea));
     return mazeTemp;
 }
-
-var player = {
-    x: 1,
-    y: 0
-};
+//--------------------------
 
 function fillAll(blockSize, ctx) {
     function fillIt(y, x) {
@@ -136,12 +124,12 @@ function draw() {
     ctx.fill();
 }
 
-//Check to see if the new space is inside the maze and not a wall
+//------------Check if  new space is inside the maze && not a wall------------
 function canMove(x, y) {
     return (y >= 0) && (y < maze.length) && (x >= 0) && (x < maze[y].length) && (maze[y][x] != 1);
 }
 
-
+//------TRIGGERED EVENT ON KEY DOWN------------------------------
 function press(e) {
     var hit = new sound('/sound/Boing.mp3');
     var win, dab = new sound('/sound/dab.mp3'), ctx = canvas[0].getContext('2d');
@@ -161,13 +149,13 @@ function press(e) {
     }
     enviaDatos(player.x, player.y);
     draw();
-    if (player.x == 79 && player.y == 59) {
+   /* if (player.x == 79 && player.y == 59) {
         win = new Image();
         win.src = '/images/youwin.jpg';
         ctx.drawImage(win, 0, 0);
         ctx.stroke();
     }
-
+                            fofo el papa de los sonidos lo hace...no sirve para todos los size del maze
     if (player.x == 80 && player.y == 59) {
         myAudio.pause();
         dab.play();
@@ -177,16 +165,18 @@ function press(e) {
         ctx.stroke();
         empezarDetener(this);
         document.onkeydown = desabilitar;
-    }
+    }*/
     e.preventDefault();
 }
-//---------------------------------------------------------------------------
+//--------------------Backtracking miedo find path to win-----------------------------------
 function searchMaze(y, x) {
     var sol;
+    var ly=maze.length-1;
+    var lx=maze[1].length-1;
     function searchMaze(y, x, m) {
         if (!sol) {
             if (maze[y][x] != 5) {
-                var log1 = (x < 0) || (x > 80) || (y < 0) || (y > 59);
+                var log1 = (x < 0) || (x > lx) || (y < 0) || (y > ly);
                 if (!log1) {
                     var log2 = m[y][x] == 1;
                     if (!log2) {
@@ -195,7 +185,7 @@ function searchMaze(y, x) {
                         maze[y][x] = 5;
                         player.y = y;
                         player.x = x;
-                        if ((x == 80) && (y == 59)) {
+                        if ((x == lx) && (y == ly-1)) {
                             console.log("Yay!, I have found the way out!");
                             sol = copy.map((arr) => arr.slice());
                             return sol;
@@ -213,7 +203,7 @@ function searchMaze(y, x) {
     searchMaze(y, x, maze);
     return sol;
 }
-//--------------------------------------------------RESPUESTA MARCADA-------------------------------------------------------------
+//--------------------------------------------------Paint RESPUESTA--------------------------------------------------
 function fillAllAnswer(blockSize, ctx) {
     function fillItAnswer(y, x) {
         if (x < maze[y].length) {
@@ -247,12 +237,12 @@ function drawAnswer() {
     ctx.clearRect(0, 0, width, width);
     //Loop through the maze array drawing the walls and the goal
     fillAllAnswer(blockSize, ctx);
-    if (player.x == 80 && player.y == 59) {
+   /* if (player.x == 80 && player.y == 59) {
         myAudio.pause();
-        dab.play();
+        dab.play();             chifrijo y bullon no sirve para todos los size del maze
         empezarDetener(this);
         document.onkeydown = desabilitar;
-    }
+    }*/
 }
 
 function drawAnswer2() {
@@ -267,6 +257,8 @@ function drawAnswer2() {
     fillAllAnswer(blockSize, ctx);
 }
 
+
+//-----------------------chao------------------
 function desabilitar() {
     if (event.ctrlKey) {
         switch (window.event.keyCode) {
@@ -282,7 +274,7 @@ function desabilitar() {
     }
 }
 
-
+///-------CHRONO ARRACAHCE--------------------------------
 
 function empezarDetener(elemento) {
     if (timeout == 0) {
