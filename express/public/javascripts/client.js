@@ -82,6 +82,7 @@ let Inicio = (a) => (a == 1) ? (Begin(),getLaberynth(1)) : (
 
 
 //-----------CHIFRIJO----------------------------------------------
+
 function jsonMaze(data) {
     var mazeTemp = [];
     data.forEach(x => mazeTemp.push(x.linea));
@@ -125,7 +126,6 @@ function draw() {
     fillAll(blockSize, ctx);
     ctx.beginPath();
     half = blockSize / 2;
-
     ctx.fillStyle = "red";
     ctx.arc(player.x * blockSize + half, player.y * blockSize + half, half, 0, 2 * Math.PI);
     ctx.fill();

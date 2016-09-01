@@ -65,38 +65,61 @@ router.route('/MazeDB').post(function(req, res) {
 //-----------------------maze------------------
 size=[{x:30,y:40},{x:20,y:30},{x:10,y:20}];
 
+function fillUnvisited(un,x,y){
+	function doIt(un,j,k,x,y,flag){
+		if(j < x + 2){
+			flag ? un[j] = [] : 0 ;
+			if(k < y + 1){
+			un[j].push(j > 0 && j < x + 1 && k > 0 && (j != here[0] + 1 || k != here[1] + 1));
+			doIt(un,j,k+1,x,y,false);
+		}else{ doIt(un,j+1,0,x,y,true);}
+	}
+	}
+	doIt(un,0,0,x,y,true);
+}
+
+function fillPotential(un,po,j,pos,n){
+	if(j<pos){
+		if (un[po[j][0] + 1][po[j][1] + 1])
+			n.push(po[j]);
+			fillPotential(un,po,j+1,pos,n);
+		}
+}
+
+function lastOne(n,unvisited,horiz,verti,path,here){
+	if (0 < n) {
+		var potential = [	[here[0] + 1, here[1]], [here[0], here[1] + 1],	[here[0] - 1, here[1]], [here[0], here[1] - 1]	];
+		var neighbors = [];
+		fillPotential(unvisited,potential,0,4,neighbors);
+		(neighbors.length) ? (
+			next = neighbors[Math.floor(Math.random() * neighbors.length)],
+			unvisited[next[0] + 1][next[1] + 1] = false,
+			(next[0] == here[0]) ?
+			(horiz[next[0]][(next[1] + here[1] - 1) / 2] = true) :
+			(verti[(next[0] + here[0] - 1) / 2][next[1]] = true),
+			path.push(here = next),
+			lastOne(n-1,unvisited,horiz,verti,path,here)
+		) : (
+			here = path.pop(),
+			lastOne(n,unvisited,horiz,verti,path,here)
+	);
+	}
+
+}
+
 function maze(x, y) {
 	var n = x * y - 1;
 	if (n < 0) { alert("illegal maze dimensions"); return; }
-	var horiz = []; for (var j = 0; j < x + 1; j++) horiz[j] = [],
-		verti = []; for (var j = 0; j < x + 1; j++) verti[j] = [],
-			here = [Math.floor(Math.random() * x), Math.floor(Math.random() * y)],
-			path = [here],
-			unvisited = [];
-	for (var j = 0; j < x + 2; j++) {
-		unvisited[j] = [];
-		for (var k = 0; k < y + 1; k++)
-			unvisited[j].push(j > 0 && j < x + 1 && k > 0 && (j != here[0] + 1 || k != here[1] + 1));
-	}
-	while (0 < n) {
-		var potential = [[here[0] + 1, here[1]], [here[0], here[1] + 1],
-			[here[0] - 1, here[1]], [here[0], here[1] - 1]];
-		var neighbors = [];
-		for (var j = 0; j < 4; j++)
-			if (unvisited[potential[j][0] + 1][potential[j][1] + 1])
-				neighbors.push(potential[j]);
-		if (neighbors.length) {
-			n = n - 1;
-			next = neighbors[Math.floor(Math.random() * neighbors.length)];
-			unvisited[next[0] + 1][next[1] + 1] = false;
-			if (next[0] == here[0])
-				horiz[next[0]][(next[1] + here[1] - 1) / 2] = true;
-			else
-				verti[(next[0] + here[0] - 1) / 2][next[1]] = true;
-			path.push(here = next);
-		} else
-			here = path.pop();
-	}
+	var horiz = Array.apply(null,Array(x+1));
+	horiz.forEach((_, j) => horiz[j] = [], verti = []);
+	horiz.forEach((_, j) =>
+		verti[j] = [],
+		here = [Math.floor(Math.random() * x), Math.floor(Math.random() * y)],
+		path = [here],
+		unvisited = []
+	);
+	fillUnvisited(unvisited,x,y);
+	lastOne(n,unvisited,horiz,verti,path,here);
 	return { x: x, y: y, horiz: horiz, verti: verti };
 }
 
