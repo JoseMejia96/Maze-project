@@ -30,6 +30,7 @@ app.use(express.static('views'));
 router.get('/', function(req, res) {
 });
 
+let RangeArray = (a, b) => Array.from({length : a}, (v, j) => b(j));
 
 // ----------------------------------------------------
 /*app.post("/generaMaze",function (req, res) {
@@ -63,26 +64,26 @@ router.route('/MazeDB').post(function(req, res) {
 
 
 //-----------------------maze------------------
-size=[{x:30,y:40},{x:20,y:30},{x:10,y:20}];
+size=[{x : 30, y : 40}, {x : 20, y : 30}, {x : 10, y : 20}];
 
-function fillUnvisited(un,x,y){
-	function doIt(un,j,k,x,y,flag){
+function fillUnvisited(un, x, y){
+	function doIt(un, j, k, x, y, flag){
 		if(j < x + 2){
-			flag ? un[j] = [] : 0 ;
-			if(k < y + 1){
-			un[j].push(j > 0 && j < x + 1 && k > 0 && (j != here[0] + 1 || k != here[1] + 1));
-			doIt(un,j,k+1,x,y,false);
-		}else{ doIt(un,j+1,0,x,y,true);}
+			flag ? un[j] = [] : un ;
+			(k < y + 1) ? (
+			un[j].push(j > 0 && j < x + 1 && k > 0 && (j != here[0] + 1 || k != here[1] + 1)),
+			doIt(un,j,k+1,x,y,false)
+		) : (	doIt(un,j+1,0,x,y,true)	);
 	}
 	}
-	doIt(un,0,0,x,y,true);
+	doIt(un, 0, 0, x, y, true);
 }
 
 function fillPotential(un,po,j,pos,n){
-	if(j<pos){
+	if(j < pos){
 		if (un[po[j][0] + 1][po[j][1] + 1])
 			n.push(po[j]);
-			fillPotential(un,po,j+1,pos,n);
+			fillPotential(un, po, j + 1, pos, n);
 		}
 }
 
@@ -90,7 +91,7 @@ function lastOne(n,unvisited,horiz,verti,path,here){
 	if (0 < n) {
 		var potential = [	[here[0] + 1, here[1]], [here[0], here[1] + 1],	[here[0] - 1, here[1]], [here[0], here[1] - 1]	];
 		var neighbors = [];
-		fillPotential(unvisited,potential,0,4,neighbors);
+		fillPotential(unvisited, potential, 0, 4, neighbors);
 		(neighbors.length) ? (
 			next = neighbors[Math.floor(Math.random() * neighbors.length)],
 			unvisited[next[0] + 1][next[1] + 1] = false,
@@ -98,50 +99,51 @@ function lastOne(n,unvisited,horiz,verti,path,here){
 			(horiz[next[0]][(next[1] + here[1] - 1) / 2] = true) :
 			(verti[(next[0] + here[0] - 1) / 2][next[1]] = true),
 			path.push(here = next),
-			lastOne(n-1,unvisited,horiz,verti,path,here)
+			lastOne(n-1, unvisited, horiz, verti, path, here)
 		) : (
 			here = path.pop(),
-			lastOne(n,unvisited,horiz,verti,path,here)
+			lastOne(n, unvisited, horiz, verti, path, here)
 	);
 	}
 
 }
 
+
+
 function maze(x, y) {
-	var n = x * y - 1;
-	if (n < 0) { alert("illegal maze dimensions"); return; }
-	var horiz = Array.apply(null,Array(x+1));
-	horiz.forEach((_, j) => horiz[j] = [], verti = []);
-	horiz.forEach((_, j) =>
-		verti[j] = [],
-		here = [Math.floor(Math.random() * x), Math.floor(Math.random() * y)],
-		path = [here],
-		unvisited = []
-	);
-	fillUnvisited(unvisited,x,y);
-	lastOne(n,unvisited,horiz,verti,path,here);
+	var horiz = [], verti = [];
+	let fillArray1 = j => (horiz[j] = []);
+	let fillArray2 = j => (verti[j] = [],
+												here = [Math.floor(Math.random() * x), Math.floor(Math.random() * y)],
+												path = [here],
+												unvisited = []
+		)
+	horiz = RangeArray(x+1, z => fillArray1(0,[],[]));
+	verti = RangeArray(x+1, q => fillArray2(0));
+	fillUnvisited(unvisited, x, y);
+	lastOne(x * y - 1, unvisited, horiz, verti, path, here);
 	return { x: x, y: y, horiz: horiz, verti: verti };
 }
 
 function GenerateMaze(m){
-function mmaze(j,k,outstring,line,m){
-if(j<m.x*2+1){
-  if(k<m.y*2+1){
-    if(j%2==0)
-    (0==k%2)?line[k]=1:((j>0&&m.verti[j/2-1][Math.floor(k/2)])?line[k]=0:line[k]=1);
-    else
-    (0==k%2)?((k>0&&m.horiz[(j-1)/2][k/2-1])?line[k]=0:line[k]=1):line[k]=0;
-    mmaze(j,k+1,outstring,line,m);
+function mmaze(j, k, outstring, line, m){
+if(j < m.x * 2 + 1){
+  if(k < m.y * 2 + 1){
+    (j % 2 == 0) ? (
+    (0 == k % 2) ? line[k] = 1 : ((j > 0 && m.verti[j / 2 - 1][Math.floor(k / 2)]) ? line[k] = 0 : line[k] = 1)
+		) : (
+    (0 == k % 2) ? ((k > 0 && m.horiz[(j - 1) / 2][k / 2 - 1]) ? line[k] = 0 : line[k] = 1) : line[k] = 0)
+    mmaze(j, k+1, outstring, line, m);
   }else{
-    (0==j)?line[1]=0:0;
-    (m.x*2-1==j)?line[2*m.y]=-1:0;
+    (0==j) ? line[1] = 0 : line;
+    (m.x * 2 - 1 == j) ? line[2 * m.y] = -1 : line;
     outstring.push(saveLine(line));
-    mmaze(j+1,0,outstring,[],m);
+    mmaze(j + 1, 0, outstring, [], m);
   }
   }
   return outstring;
 }
-  return mmaze(0,0,[],[],m);
+  return mmaze(0, 0, [], [], m);
 }
 
 function saveLine(line) {
@@ -150,10 +152,10 @@ function saveLine(line) {
 
 function DrawMaze(s) {
 	console.log("Dibujando t= ",s);
-	x=size[3-s].x;
-	y=size[3-s].y;
+	x=size[3 - s].x;
+	y=size[3 - s].y;
 	console.log("x= ",x," y=",y);
-	return GenerateMaze(maze(x,y));
+	return GenerateMaze(maze(x, y));
 }
 
 
