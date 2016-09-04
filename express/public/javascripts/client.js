@@ -8,8 +8,6 @@ var player = {
     y: 0
 };
 //-----------------------Cronometro
-var inicio = 0;
-var timeout = 0;
 
 //-------------FETCH---------------------------------------
 
@@ -20,9 +18,7 @@ let getLaberynth = (x) => fetch('http://localhost:3000/api/generaMaze', {
     }).then(function (response) {
     return response.json()
         .then(function (json) {
-            console.log(json);
             maze = jsonMaze(json);
-           // console.log("maze.length",maze.length,"maze[y].length",maze[1].length);
             draw();
             console.log('Maze is done!!');
         });
@@ -70,7 +66,7 @@ window.onload = function () {
 
 }
 
-let Begin = () => (canvas = $('#Maze'), empezarDetener(this),
+let Begin = () => (canvas = $('#Maze'), tiempo(),
 document.getElementById("dificultades").style.display = "none",
 document.getElementById("wholePage").style.display = "block"
 );
@@ -156,23 +152,6 @@ function press(e) {
     }
     enviaDatos(player.x, player.y);
     draw();
-   /* if (player.x == 79 && player.y == 59) {
-        win = new Image();
-        win.src = '/images/youwin.jpg';
-        ctx.drawImage(win, 0, 0);
-        ctx.stroke();
-    }
-                            fofo el papa de los sonidos lo hace...no sirve para todos los size del maze
-    if (player.x == 80 && player.y == 59) {
-        myAudio.pause();
-        dab.play();
-        win = new Image();
-        win.src = '/images/youwin.jpg';
-        ctx.drawImage(win, 0, 0);
-        ctx.stroke();
-        empezarDetener(this);
-        document.onkeydown = desabilitar;
-    }*/
     e.preventDefault();
 }
 //--------------------Backtracking miedo find path to win-----------------------------------
@@ -244,12 +223,6 @@ function drawAnswer() {
     ctx.clearRect(0, 0, width, width);
     //Loop through the maze array drawing the walls and the goal
     fillAllAnswer(blockSize, ctx);
-   /* if (player.x == 80 && player.y == 59) {
-        myAudio.pause();
-        dab.play();             chifrijo y bullon no sirve para todos los size del maze
-        empezarDetener(this);
-        document.onkeydown = desabilitar;
-    }*/
 }
 
 function drawAnswer2() {
@@ -265,45 +238,15 @@ function drawAnswer2() {
 }
 
 
-//-----------------------chao------------------
-function desabilitar() {
-    if (event.ctrlKey) {
-        switch (window.event.keyCode) {
-            case 38:
-            case 40:
-            case 37:
-            case 39:
-                event.keyCode = 0;
-                return false;
-            default:
-                break;
-        }
-    }
-}
 
 ///-------CHRONO ARRACAHCE--------------------------------
 
-function empezarDetener(elemento) {
-    if (timeout == 0) {
-        elemento.value = "Detener";
-        inicio = vuelta = new Date().getTime();
-        funcionando();
-    } else {
-        elemento.value = "Empezar";
-        clearTimeout(timeout);
-        timeout = 0;
-    }
-}
-
-function funcionando() {
-    var actual = new Date().getTime();
-    var diff = new Date(actual - inicio);
-    var result = LeadingZero(diff.getUTCHours()) + ":" + LeadingZero(diff.getUTCMinutes()) + ":" + LeadingZero(diff.getUTCSeconds());
-    document.getElementById('crono').innerHTML = result;
-    timeout = setTimeout("funcionando()", 1000);
-}
-
-/* Funcion que pone un 0 delante de un valor si es necesario */
-function LeadingZero(Time) {
-    return (Time < 10) ? "0" + Time : + Time;
+var worker;
+function tiempo(){
+  if(typeof(worker == "undefined")){
+      worker = new Worker("cronometro.js");
+  }
+  worker.onmessage = function(event){
+  document.getElementById('crono').innerHTML = event.data;
+ }
 }
