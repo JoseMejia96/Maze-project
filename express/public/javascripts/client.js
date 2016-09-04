@@ -45,6 +45,22 @@ let enviaDatos = (x, y) => fetch('http://localhost:3000/api/MazeDB', {
 }).catch(function (error) {
     console.log('Request failed', error);
 });
+/*
+
+let getData = () => fetch('http://localhost:3000/api/ObtenerDatos', {
+    method: 'GET',
+    headers: { "Content-type": "application/json; charset=UTF-8" }
+}).then(function (response) {
+  return response.json()
+    .then(function (json) {
+        player.x = json[0].x;
+        player.y = json[0].y;
+        maze = JSON.parse(json[0].maze);
+        console.log(maze);
+    });
+}).catch(function (error) {
+  return false;
+});*/
 
 
 
@@ -94,10 +110,14 @@ function soundTrack(src) {
 //---------------------------ON LOAD--------------------------------------
 
 window.onload = function () {
-
     retrieveData();
+<<<<<<< HEAD
     getData();
 
+=======
+    let st = Mazelog.mazeOffline ? '../public/sound/back.mp3' : 'sound/back.mp3';
+    soundTrack(st);
+>>>>>>> origin/master
     document.onkeydown = press;
 
 }
@@ -125,9 +145,7 @@ function retrieveData() {
     var x = localStorage.getItem("Mazelog_Paradigmas_P1");
     if (x != null) {
         Mazelog = JSON.parse(x);
-
         if (Mazelog.mazeOffline === true) {
-
             if (Mazelog.lastMz != "") {
                 player.x = Mazelog.playerX;
                 player.y = Mazelog.playerY;
@@ -159,31 +177,6 @@ function jsonMaze(data) {
     data.forEach(x => mazeTemp.push(x.linea));
     return mazeTemp;
 }
-//--------------------------
-
-function fillAll(blockSize, ctx) {
-    function fillIt(y, x) {
-        if (x < maze[y].length) {
-            (maze[y][x] === 1) ? (ctx.fillStyle = "black", ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize)) : (
-                (maze[y][x] === -1) ? (
-                    ctx.beginPath(),
-                    ctx.lineWidth = 5,
-                    ctx.strokeStyle = "gold",
-                    ctx.moveTo(x * blockSize, y * blockSize),
-                    ctx.lineTo((x + 1) * blockSize, (y + 1) * blockSize),
-                    ctx.moveTo(x * blockSize, (y + 1) * blockSize),
-                    ctx.lineTo((x + 1) * blockSize, y * blockSize),
-                    ctx.stroke()) : (maze[y][x] === 5) ?
-                        (ctx.fillStyle = "yellow",
-                            ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize)) : 0
-            );
-            fillIt(y, x + 1);
-        } else if (y < maze.length - 1) {
-            fillIt(y + 1, 0);
-        }
-    }
-    fillIt(0, 0);
-}
 
 //---------------------------Primera vez-----------------------
 function draw() {
@@ -194,7 +187,7 @@ function draw() {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, width, width);
     ctx.fillStyle = "black";
-    fillAll(blockSize, ctx);
+    fillAllAnswer(blockSize, ctx);
     ctx.beginPath();
     half = blockSize / 2;
     ctx.fillStyle = "red";
@@ -243,8 +236,11 @@ function searchMaze(y, x) {
                         var copy = m.map((arr) => arr.slice());
                         copy[y][x] = 2;  // estoy bien
                         logmmaze[y][x] = 5;
+<<<<<<< HEAD
                         //  player.y = y;
                         //  player.x = x;
+=======
+>>>>>>> origin/master
                         if ((x == lx) && (y == ly - 1)) {
                             console.log("Yay!, I have found the way out!");
                             sol = copy.map((arr) => arr.slice());
@@ -285,7 +281,13 @@ function fillAllAnswer(blockSize, ctx) {
 
 function drawAnswer() {
     maze = searchMaze(0, 1);
+<<<<<<< HEAD
     //dab = new sound('../public/sound/aplauso.mp3');
+=======
+    let st=Mazelog.mazeOffline?'../public/sound/aplauso.mp3':'sound/aplauso.mp3';
+    dab = new sound(st);
+    dab.play();
+>>>>>>> origin/master
     var width = canvas.width();
     var blockSize = width / ((maze.length) + 20);
     var ctx = canvas[0].getContext('2d');
@@ -308,10 +310,13 @@ function drawAnswer2() {
 }
 
 
+<<<<<<< HEAD
 
 ///-------CHRONO ARRACAHCE--------------------------------
 
 
+=======
+>>>>>>> origin/master
 //-----------------------------Offline-------------------------------
 
 function saveOffline() {
