@@ -84,9 +84,8 @@ function soundTrack(src) {
 //---------------------------ON LOAD--------------------------------------
 
 window.onload = function () {
-
     retrieveData();
-    let st=Mazelog.mazeOffline?'../public/sound/back.mp3':'sound/back.mp3';
+    let st = Mazelog.mazeOffline ? '../public/sound/back.mp3' : 'sound/back.mp3';
     soundTrack(st);
     document.onkeydown = press;
 
@@ -96,9 +95,7 @@ function retrieveData() {
     var x = localStorage.getItem("Mazelog_Paradigmas_P1");
     if (x != null) {
         Mazelog = JSON.parse(x);
-
         if (Mazelog.mazeOffline === true) {
-
             if (Mazelog.lastMz != "") {
                 player.x = Mazelog.playerX;
                 player.y = Mazelog.playerY;
@@ -128,44 +125,6 @@ function jsonMaze(data) {
     data.forEach(x => mazeTemp.push(x.linea));
     return mazeTemp;
 }
-//--------------------------
-
-function fillAll(blockSize, ctx) {
-let states = {
-  1 : (x,y) => (
-    ctx.fillStyle = "black",
-    ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize)
-  ),
-  7 : (x,y) => (
-      ctx.beginPath(),
-      ctx.lineWidth = 5,
-      ctx.strokeStyle = "gold",
-      ctx.moveTo(x * blockSize, y * blockSize),
-      ctx.lineTo((x + 1) * blockSize, (y + 1) * blockSize),
-      ctx.moveTo(x * blockSize, (y + 1) * blockSize),
-      ctx.lineTo((x + 1) * blockSize, y * blockSize),
-      ctx.stroke()
-    ),
-  5 : (x,y) => (
-      ctx.fillStyle = "yellow",
-      ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize)
-    ),
-  0 : (x,y) => (
-        ctx.fillStyle = "white",
-        ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize)
-    )
-};
-
-    function fillIt(y, x) {
-        if (x < maze[y].length) {
-          states[maze[y][x]](x,y);
-            fillIt(y, x + 1);
-        } else if (y < maze.length - 1) {
-            fillIt(y + 1, 0);
-        }
-    }
-    fillIt(0, 0);
-}
 
 //---------------------------Primera vez-----------------------
 function draw() {
@@ -176,7 +135,7 @@ function draw() {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, width, width);
     ctx.fillStyle = "black";
-    fillAll(blockSize, ctx);
+    fillAllAnswer(blockSize, ctx);
     ctx.beginPath();
     half = blockSize / 2;
     ctx.fillStyle = "red";
@@ -191,7 +150,7 @@ function canMove(x, y) {
 
 //------TRIGGERED EVENT ON KEY DOWN------------------------------
 function press(e) {
-    let st=Mazelog.mazeOffline?'../public/sound/Boing.mp3':'sound/Boing.mp3';
+    let st = Mazelog.mazeOffline ? '../public/sound/Boing.mp3' : 'sound/Boing.mp3';
     var hit = new sound(st);
     //st=Mazelog.mazeOffline?'../public/sound/dab.mp3':'sound/dab.mp3';
     var win, ctx = canvas[0].getContext('2d');
