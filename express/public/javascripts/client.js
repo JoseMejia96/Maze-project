@@ -40,6 +40,22 @@ let enviaDatos = (x, y) => fetch('http://localhost:3000/api/MazeDB', {
 }).catch(function (error) {
     console.log('Request failed', error);
 });
+/*
+
+let getData = () => fetch('http://localhost:3000/api/ObtenerDatos', {
+    method: 'GET',
+    headers: { "Content-type": "application/json; charset=UTF-8" }
+}).then(function (response) {
+  return response.json()
+    .then(function (json) {
+        player.x = json[0].x;
+        player.y = json[0].y;
+        maze = JSON.parse(json[0].maze);
+        console.log(maze);
+    });
+}).catch(function (error) {
+  return false;
+});*/
 
 //----------------------Audio fondo-----------------
 function sound(src) {
@@ -94,7 +110,7 @@ function retrieveData() {
     }
 }
 
-let Begin = () => (canvas = $('#Maze')/*, tiempo()*/,
+let Begin = () => (canvas = $('#Maze'), tiempo(),
     document.getElementById("dificultades").style.display = "none",
     document.getElementById("wholePage").style.display = "block"
 );
@@ -115,21 +131,34 @@ function jsonMaze(data) {
 //--------------------------
 
 function fillAll(blockSize, ctx) {
+let states = {
+  1 : (x,y) => (
+    ctx.fillStyle = "black",
+    ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize)
+  ),
+  7 : (x,y) => (
+      ctx.beginPath(),
+      ctx.lineWidth = 5,
+      ctx.strokeStyle = "gold",
+      ctx.moveTo(x * blockSize, y * blockSize),
+      ctx.lineTo((x + 1) * blockSize, (y + 1) * blockSize),
+      ctx.moveTo(x * blockSize, (y + 1) * blockSize),
+      ctx.lineTo((x + 1) * blockSize, y * blockSize),
+      ctx.stroke()
+    ),
+  5 : (x,y) => (
+      ctx.fillStyle = "yellow",
+      ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize)
+    ),
+  0 : (x,y) => (
+        ctx.fillStyle = "white",
+        ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize)
+    )
+};
+
     function fillIt(y, x) {
         if (x < maze[y].length) {
-            (maze[y][x] === 1) ? (ctx.fillStyle = "black", ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize)) : (
-                (maze[y][x] === -1) ? (
-                    ctx.beginPath(),
-                    ctx.lineWidth = 5,
-                    ctx.strokeStyle = "gold",
-                    ctx.moveTo(x * blockSize, y * blockSize),
-                    ctx.lineTo((x + 1) * blockSize, (y + 1) * blockSize),
-                    ctx.moveTo(x * blockSize, (y + 1) * blockSize),
-                    ctx.lineTo((x + 1) * blockSize, y * blockSize),
-                    ctx.stroke()) : (maze[y][x] === 5) ?
-                        (ctx.fillStyle = "yellow",
-                            ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize)) : 0
-            );
+          states[maze[y][x]](x,y);
             fillIt(y, x + 1);
         } else if (y < maze.length - 1) {
             fillIt(y + 1, 0);
@@ -185,7 +214,7 @@ function searchMaze(y, x) {
     var sol;
     var ly = maze.length - 1;
     var lx = maze[1].length - 1;
-       var logmmaze = maze.map((arr) => arr.slice());
+    var logmmaze = maze.map((arr) => arr.slice());
     function searchMaze(y, x, m) {
         if (!sol) {
             if (logmmaze[y][x] != 5) {
@@ -196,8 +225,6 @@ function searchMaze(y, x) {
                         var copy = m.map((arr) => arr.slice());
                         copy[y][x] = 2;  // estoy bien
                         logmmaze[y][x] = 5;
-                      //  player.y = y;
-                      //  player.x = x;
                         if ((x == lx) && (y == ly - 1)) {
                             console.log("Yay!, I have found the way out!");
                             sol = copy.map((arr) => arr.slice());
@@ -238,7 +265,9 @@ function fillAllAnswer(blockSize, ctx) {
 
 function drawAnswer() {
     maze = searchMaze(0, 1);
-    dab = new sound('../public/sound/aplauso.mp3');
+    let st=Mazelog.mazeOffline?'../public/sound/aplauso.mp3':'sound/aplauso.mp3';
+    dab = new sound(st);
+    dab.play();
     var width = canvas.width();
     var blockSize = width / ((maze.length) + 20);
     var ctx = canvas[0].getContext('2d');
@@ -261,18 +290,6 @@ function drawAnswer2() {
 }
 
 
-
-///-------CHRONO ARRACAHCE--------------------------------
-
-/*var worker;
-function tiempo() {
-    if (typeof (worker == "undefined")) {
-        worker = new Worker("..public/views/cronometro.js");
-    }
-    worker.onmessage = function (event) {
-        document.getElementById('crono').innerHTML = event.data;
-    }
-}*/
 //-----------------------------Offline-------------------------------
 
 function saveOffline() {
