@@ -7,7 +7,7 @@ var player = {
     x: 1,
     y: 0
 };
-
+var dbfilled = false;
 var Mazelog = { lastMz: "", mazeOffline: false, playerX: "", playerY: "" };
 //-----------------------Cronometro
 
@@ -21,6 +21,8 @@ let getLaberynth = (x) => fetch('http://localhost:3000/api/generaMaze', {
     return response.json()
         .then(function (json) {
             maze = jsonMaze(json);
+            let st = Mazelog.mazeOffline ? '../public/sound/back.mp3' : 'sound/back.mp3';
+            soundTrack(st);
             draw();
             Mazelog.mazeOffline = false;
             console.log('Maze is done!!');
@@ -28,17 +30,41 @@ let getLaberynth = (x) => fetch('http://localhost:3000/api/generaMaze', {
 }).catch(function (error) {
     Mazelog.mazeOffline = true;
     maze = jsonMaze(getOfflineMaze(x));
-    Mazelog.lastMz=maze;
+    Mazelog.lastMz = maze;
+    let st = Mazelog.mazeOffline ? '../public/sound/back.mp3' : 'sound/back.mp3';
+    soundTrack(st);
     draw();
     console.log('Request failed', error);
 });
 
+
 let enviaDatos = (x, y) => fetch('http://localhost:3000/api/MazeDB', {
     method: 'POST',
     headers: { "Content-type": "application/json; charset=UTF-8" },
-    body: JSON.stringify({ x: x, y: y })
+    body: JSON.stringify({ x: x, y: y, mmmaze: maze })
 }).catch(function (error) {
     console.log('Request failed', error);
+});
+
+
+
+let getData = () => fetch('http://localhost:3000/api/ObtenerDatos', {
+    method: 'POST',
+    headers: { "Content-type": "application/json; charset=UTF-8" }
+}).then(function (response) {
+    return response.json()
+        .then(function (json) {
+            player.x = json[0].x;
+            player.y = json[0].y;
+            maze = JSON.parse(json[0].maze);
+            //console.log(maze);
+            Mazelog.mazeOffline = false;
+            dbfilled = true;
+            Begin();
+            draw();
+        });
+}).catch(function (error) {
+    dbfilled = false;
 });
 
 //----------------------Audio fondo-----------------
@@ -70,11 +96,30 @@ function soundTrack(src) {
 window.onload = function () {
 
     retrieveData();
-    let st=Mazelog.mazeOffline?'../public/sound/back.mp3':'sound/back.mp3';
-    soundTrack(st);
+    getData();
+
     document.onkeydown = press;
 
 }
+
+
+function nuevola() {
+    canvas = $('#Maze');
+    //tiempo();
+    document.getElementById("dificultades").style.display = "block";
+    document.getElementById("wholePage").style.display = "none";
+    var canvas, leftRight = 1.2, upDown = -1.8;
+    var myAudio;
+    var maze = [];
+    var player = {
+        x: 1,
+        y: 0
+    };
+    var dbfilled = false;
+    var Mazelog = { lastMz: "", mazeOffline: false, playerX: "", playerY: "" };
+}
+
+
 
 function retrieveData() {
     var x = localStorage.getItem("Mazelog_Paradigmas_P1");
@@ -87,6 +132,8 @@ function retrieveData() {
                 player.x = Mazelog.playerX;
                 player.y = Mazelog.playerY;
                 maze = Mazelog.lastMz;
+                let st = Mazelog.mazeOffline ? '../public/sound/back.mp3' : 'sound/back.mp3';
+                soundTrack(st);
                 Begin();
                 draw();
             }
@@ -94,7 +141,7 @@ function retrieveData() {
     }
 }
 
-let Begin = () => (canvas = $('#Maze')/*, tiempo()*/,
+let Begin = () => (canvas = $('#Maze'), tiempo(),
     document.getElementById("dificultades").style.display = "none",
     document.getElementById("wholePage").style.display = "block"
 );
@@ -162,7 +209,7 @@ function canMove(x, y) {
 
 //------TRIGGERED EVENT ON KEY DOWN------------------------------
 function press(e) {
-    let st=Mazelog.mazeOffline?'../public/sound/Boing.mp3':'sound/Boing.mp3';
+    let st = Mazelog.mazeOffline ? '../public/sound/Boing.mp3' : 'sound/Boing.mp3';
     var hit = new sound(st);
     //st=Mazelog.mazeOffline?'../public/sound/dab.mp3':'sound/dab.mp3';
     var win, ctx = canvas[0].getContext('2d');
@@ -173,10 +220,10 @@ function press(e) {
         39: z => (canMove(player.x + 1, player.y) ? player.x++ : hit.play()),
     };
     states[e.which]();
-    Mazelog.playerX=player.x;
-    Mazelog.playerY=player.y;
+    Mazelog.playerX = player.x;
+    Mazelog.playerY = player.y;
     saveOffline();
-//enviaDatos()
+    enviaDatos(player.x, player.y);
     draw();
     e.preventDefault();
 }
@@ -185,7 +232,7 @@ function searchMaze(y, x) {
     var sol;
     var ly = maze.length - 1;
     var lx = maze[1].length - 1;
-       var logmmaze = maze.map((arr) => arr.slice());
+    var logmmaze = maze.map((arr) => arr.slice());
     function searchMaze(y, x, m) {
         if (!sol) {
             if (logmmaze[y][x] != 5) {
@@ -196,8 +243,8 @@ function searchMaze(y, x) {
                         var copy = m.map((arr) => arr.slice());
                         copy[y][x] = 2;  // estoy bien
                         logmmaze[y][x] = 5;
-                      //  player.y = y;
-                      //  player.x = x;
+                        //  player.y = y;
+                        //  player.x = x;
                         if ((x == lx) && (y == ly - 1)) {
                             console.log("Yay!, I have found the way out!");
                             sol = copy.map((arr) => arr.slice());
@@ -238,7 +285,7 @@ function fillAllAnswer(blockSize, ctx) {
 
 function drawAnswer() {
     maze = searchMaze(0, 1);
-    dab = new sound('../public/sound/aplauso.mp3');
+    //dab = new sound('../public/sound/aplauso.mp3');
     var width = canvas.width();
     var blockSize = width / ((maze.length) + 20);
     var ctx = canvas[0].getContext('2d');
@@ -264,15 +311,7 @@ function drawAnswer2() {
 
 ///-------CHRONO ARRACAHCE--------------------------------
 
-/*var worker;
-function tiempo() {
-    if (typeof (worker == "undefined")) {
-        worker = new Worker("..public/views/cronometro.js");
-    }
-    worker.onmessage = function (event) {
-        document.getElementById('crono').innerHTML = event.data;
-    }
-}*/
+
 //-----------------------------Offline-------------------------------
 
 function saveOffline() {
@@ -284,7 +323,7 @@ function getOfflineMaze(s) {
     x = size[3 - s].x;
     y = size[3 - s].y;
     //console.log("x= ",x," y=",y);
-   // Mazelog.lastMz = maze;
+    // Mazelog.lastMz = maze;
     return GenerateMaze(mazze(x, y));
 
 }

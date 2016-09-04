@@ -5,7 +5,6 @@ mongoose.Promise = global.Promise;
 var maze = new Schema({
   x: String,
   y: String,
-//  maze:{type:String,required:true},
-  fecha: { type: Date, default: Date.now }
+  maze: String
 });
 module.exports = mongoose.model('maze', maze);

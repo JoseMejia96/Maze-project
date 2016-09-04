@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 var port = process.env.PORT || 3000;
 
 var mongoose = require('mongoose');
-//mongoose.connect('mongodb://localhost/MazeDB');
+mongoose.connect('mongodb://localhost/MazeDB');
 var Maze = require('./modelo/model');
 
 
@@ -32,38 +32,43 @@ router.get('/', function (req, res) {
 
 let RangeArray = (a, b) => Array.from({ length: a }, (v, j) => b(j));
 
-// ----------------------------------------------------
-/*app.post("/generaMaze",function (req, res) {
-    res.send(JSON.stringify(DrawMaze()));	sepa judas xq este estaba asi
-});*/
 
 router.route("/generaMaze").post(function (req, res) {
 	let s = req.body.size;
     res.send(JSON.stringify(DrawMaze(s)));
 });
 
+
 router.route('/MazeDB').post(function (req, res) {
+	Maze.remove({}, function (err) {
+		if (err) {
+			console.log(err)
+		} else {
+			res.end('success');
+		}
+	}
+    );
 	var maze = new Maze();
 	maze.x = req.body.x;
 	maze.y = req.body.y;
+	maze.maze =JSON.stringify(req.body.mmmaze);
+	console.log("x ",maze.x,",y ",maze.y,",body ",maze.maze);
 	maze.save(function (err) {
 		if (err)
 			console.log(err);
 	});
-})
+});
 
-	.get(function (req, res) {
+router.route('/ObtenerDatos')
+	.post(function (req, res) {
 		Maze.find(function (err, maze) {
 			if (err)
 				res.send(err);
-
 			res.json(maze);
 		});
 	});
-
-
-
 //-----------------------maze------------------
+
 size = [{ x: 30, y: 40 }, { x: 20, y: 30 }, { x: 10, y: 20 }];
 
 function fillUnvisited(un, x, y) {
