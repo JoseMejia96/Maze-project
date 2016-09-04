@@ -111,13 +111,12 @@ function soundTrack(src) {
 
 window.onload = function () {
     retrieveData();
-<<<<<<< HEAD
+
     getData();
 
-=======
     let st = Mazelog.mazeOffline ? '../public/sound/back.mp3' : 'sound/back.mp3';
     soundTrack(st);
->>>>>>> origin/master
+
     document.onkeydown = press;
 
 }
@@ -236,11 +235,7 @@ function searchMaze(y, x) {
                         var copy = m.map((arr) => arr.slice());
                         copy[y][x] = 2;  // estoy bien
                         logmmaze[y][x] = 5;
-<<<<<<< HEAD
-                        //  player.y = y;
-                        //  player.x = x;
-=======
->>>>>>> origin/master
+
                         if ((x == lx) && (y == ly - 1)) {
                             console.log("Yay!, I have found the way out!");
                             sol = copy.map((arr) => arr.slice());
@@ -281,13 +276,11 @@ function fillAllAnswer(blockSize, ctx) {
 
 function drawAnswer() {
     maze = searchMaze(0, 1);
-<<<<<<< HEAD
-    //dab = new sound('../public/sound/aplauso.mp3');
-=======
+
     let st=Mazelog.mazeOffline?'../public/sound/aplauso.mp3':'sound/aplauso.mp3';
     dab = new sound(st);
     dab.play();
->>>>>>> origin/master
+
     var width = canvas.width();
     var blockSize = width / ((maze.length) + 20);
     var ctx = canvas[0].getContext('2d');
@@ -310,14 +303,6 @@ function drawAnswer2() {
 }
 
 
-<<<<<<< HEAD
-
-///-------CHRONO ARRACAHCE--------------------------------
-
-
-=======
->>>>>>> origin/master
-//-----------------------------Offline-------------------------------
 
 function saveOffline() {
     localStorage.setItem("Mazelog_Paradigmas_P1", JSON.stringify(Mazelog));
