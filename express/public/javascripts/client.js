@@ -21,8 +21,6 @@ let getLaberynth = (x) => fetch('http://localhost:3000/api/generaMaze', {
     return response.json()
         .then(function (json) {
             maze = jsonMaze(json);
-            let st = Mazelog.mazeOffline ? '../public/sound/back.mp3' : 'sound/back.mp3';
-            soundTrack(st);
             draw();
             Mazelog.mazeOffline = false;
             console.log('Maze is done!!');
@@ -31,8 +29,6 @@ let getLaberynth = (x) => fetch('http://localhost:3000/api/generaMaze', {
     Mazelog.mazeOffline = true;
     maze = jsonMaze(getOfflineMaze(x));
     Mazelog.lastMz = maze;
-    let st = Mazelog.mazeOffline ? '../public/sound/back.mp3' : 'sound/back.mp3';
-    soundTrack(st);
     draw();
     console.log('Request failed', error);
 });
@@ -45,23 +41,13 @@ let enviaDatos = (x, y) => fetch('http://localhost:3000/api/MazeDB', {
 }).catch(function (error) {
     console.log('Request failed', error);
 });
-/*
 
-let getData = () => fetch('http://localhost:3000/api/ObtenerDatos', {
-    method: 'GET',
+let BorraDatos = () => fetch('http://localhost:3000/api/BorraData', {
+    method: 'POST',
     headers: { "Content-type": "application/json; charset=UTF-8" }
-}).then(function (response) {
-  return response.json()
-    .then(function (json) {
-        player.x = json[0].x;
-        player.y = json[0].y;
-        maze = JSON.parse(json[0].maze);
-        console.log(maze);
-    });
 }).catch(function (error) {
-  return false;
-});*/
-
+    console.log('Request failed', error);
+});
 
 
 let getData = () => fetch('http://localhost:3000/api/ObtenerDatos', {
@@ -70,10 +56,9 @@ let getData = () => fetch('http://localhost:3000/api/ObtenerDatos', {
 }).then(function (response) {
     return response.json()
         .then(function (json) {
-            player.x = json[0].x;
-            player.y = json[0].y;
+            player.x = parseInt(json[0].x);
+            player.y = parseInt(json[0].y);
             maze = JSON.parse(json[0].maze);
-            //console.log(maze);
             Mazelog.mazeOffline = false;
             dbfilled = true;
             Begin();
@@ -110,12 +95,10 @@ function soundTrack(src) {
 //---------------------------ON LOAD--------------------------------------
 
 window.onload = function () {
-    retrieveData();
-
-    getData();
-
     let st = Mazelog.mazeOffline ? '../public/sound/back.mp3' : 'sound/back.mp3';
     soundTrack(st);
+    retrieveData();
+    getData();
 
     document.onkeydown = press;
 
@@ -123,19 +106,17 @@ window.onload = function () {
 
 
 function nuevola() {
-    canvas = $('#Maze');
-    //tiempo();
+    //canvas = $('#Maze');
+    startAgain();
     document.getElementById("dificultades").style.display = "block";
     document.getElementById("wholePage").style.display = "none";
     var canvas, leftRight = 1.2, upDown = -1.8;
-    var myAudio;
     var maze = [];
-    var player = {
-        x: 1,
-        y: 0
-    };
+    player.x = 1;
+    player.y = 0;
     var dbfilled = false;
     var Mazelog = { lastMz: "", mazeOffline: false, playerX: "", playerY: "" };
+    BorraDatos();
 }
 
 
@@ -235,7 +216,6 @@ function searchMaze(y, x) {
                         var copy = m.map((arr) => arr.slice());
                         copy[y][x] = 2;  // estoy bien
                         logmmaze[y][x] = 5;
-
                         if ((x == lx) && (y == ly - 1)) {
                             console.log("Yay!, I have found the way out!");
                             sol = copy.map((arr) => arr.slice());
@@ -276,23 +256,9 @@ function fillAllAnswer(blockSize, ctx) {
 
 function drawAnswer() {
     maze = searchMaze(0, 1);
-
     let st=Mazelog.mazeOffline?'../public/sound/aplauso.mp3':'sound/aplauso.mp3';
     dab = new sound(st);
     dab.play();
-
-    var width = canvas.width();
-    var blockSize = width / ((maze.length) + 20);
-    var ctx = canvas[0].getContext('2d');
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.clearRect(0, 0, width, width);
-    //Loop through the maze array drawing the walls and the goal
-    fillAllAnswer(blockSize, ctx);
-}
-
-function drawAnswer2() {
-    maze = searchMaze(player.y, player.x);
-    console.log(JSON.stringify(maze));
     var width = canvas.width();
     var blockSize = width / ((maze.length) + 20);
     var ctx = canvas[0].getContext('2d');
@@ -303,6 +269,8 @@ function drawAnswer2() {
 }
 
 
+
+//-----------------------------Offline-------------------------------
 
 function saveOffline() {
     localStorage.setItem("Mazelog_Paradigmas_P1", JSON.stringify(Mazelog));
@@ -312,8 +280,6 @@ function getOfflineMaze(s) {
     size = [{ x: 30, y: 40 }, { x: 20, y: 30 }, { x: 10, y: 20 }];
     x = size[3 - s].x;
     y = size[3 - s].y;
-    //console.log("x= ",x," y=",y);
-    // Mazelog.lastMz = maze;
     return GenerateMaze(mazze(x, y));
 
 }

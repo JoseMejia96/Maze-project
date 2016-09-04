@@ -38,6 +38,16 @@ router.route("/generaMaze").post(function (req, res) {
     res.send(JSON.stringify(DrawMaze(s)));
 });
 
+router.route('/BorraData').post(function (req, res) {
+	Maze.remove({}, function (err) {
+		if (err) {
+			console.log(err)
+		} else {
+			res.end('success');
+		}
+	}
+    );
+	});
 
 router.route('/MazeDB').post(function (req, res) {
 	Maze.remove({}, function (err) {
@@ -52,7 +62,6 @@ router.route('/MazeDB').post(function (req, res) {
 	maze.x = req.body.x;
 	maze.y = req.body.y;
 	maze.maze =JSON.stringify(req.body.mmmaze);
-	console.log("x ",maze.x,",y ",maze.y,",body ",maze.maze);
 	maze.save(function (err) {
 		if (err)
 			console.log(err);
@@ -67,6 +76,9 @@ router.route('/ObtenerDatos')
 			res.json(maze);
 		});
 	});
+
+
+
 //-----------------------maze------------------
 
 size = [{ x: 30, y: 40 }, { x: 20, y: 30 }, { x: 10, y: 20 }];
@@ -156,10 +168,8 @@ function saveLine(line) {
 }
 
 function DrawMaze(s) {
-	console.log("Dibujando t= ", s);
 	x = size[3 - s].x;
 	y = size[3 - s].y;
-	console.log("x= ", x, " y=", y);
 	return GenerateMaze(maze(x, y));
 }
 

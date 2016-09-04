@@ -8,3 +8,5 @@ function tiempo() {
         document.getElementById('crono').innerHTML = event.data;
     }
 }
+
+let startAgain = () => worker.terminate();
