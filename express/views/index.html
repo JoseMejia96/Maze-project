@@ -9,22 +9,34 @@
 
 <body>
 	<center>
-	<div id="dificultades">
-		<button class="button button1" onclick="Inicio(1)">Facil</button>
-		<button class="button button1" onclick="Inicio(2)">Medio</button>
-		<button class="button button1" onclick="Inicio(3)">Dificil</button>
-	</div>
-</center>
-	<div id="wholePage" style = "display: none;">
+		<div id="dificultades">
+			<button class="button button1" onclick="Inicio(1)">Facil</button>
+			<button class="button button1" onclick="Inicio(2)">Medio</button>
+			<button class="button button1" onclick="Inicio(3)">Dificil</button>
+		</div>
+	</center>
+	<div id="wholePage" style="display: none;">
 		<center>
+
+			<div id="logs">
+				<table>
+					<tr>
+						<td>
+							<input type="text" disabled="true" id="infoE">
+						</td>
+					</tr>
+
+				</table>
+			</div>
 			<div id="encabezado">
 				<h1 id="titulo">Maze time: </h1>
 				<h2 id='crono'>00:00:00</h2>
 			</div>
+
 			<canvas id="Maze" width="800px" height="600px"></canvas>
 			<div id=botones>
 
-				<button class="button button1" onclick="drawAnswer()">Solucion inicial</button>
+				<button class="button button1" onclick="drawAnswer()">Solucionar</button>
 				<button class="button button1" onclick="nuevola()">Generar Nuevo Laberinto</button>
 			</div>
 		</center>

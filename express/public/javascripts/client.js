@@ -63,9 +63,10 @@ let getData = () => fetch('http://localhost:3000/api/ObtenerDatos', {
             dbfilled = true;
             Begin();
             draw();
+            fillBarra();
         });
 }).catch(function (error) {
-    dbfilled = false;
+   fillBarra();
 });
 
 //----------------------Audio fondo-----------------
@@ -101,12 +102,17 @@ window.onload = function () {
     getData();
 
     document.onkeydown = press;
-
+    
 }
 
+function fillBarra() {
+    var te = document.getElementById("infoE");
+    var mode = !Mazelog.mazeOffline;
+    te.value = mode ? "Online" : "Offline";
+   
+}
 
 function nuevola() {
-    //canvas = $('#Maze');
     startAgain();
     document.getElementById("dificultades").style.display = "block";
     document.getElementById("wholePage").style.display = "none";
@@ -185,12 +191,17 @@ function press(e) {
     let st = Mazelog.mazeOffline ? '../public/sound/Boing.mp3' : 'sound/Boing.mp3';
     var hit = new sound(st);
     //st=Mazelog.mazeOffline?'../public/sound/dab.mp3':'sound/dab.mp3';
+    let st2 = Mazelog.mazeOffline ? '../public/sound/aplauso.mp3' : 'sound/aplauso.mp3';
+    var hit2 = new sound(st2);
     var win, ctx = canvas[0].getContext('2d');
     let states = {
         38: z => (canMove(player.x, player.y - 1) ? player.y-- : hit.play()),
         40: z => (canMove(player.x, player.y + 1) ? player.y++ : hit.play()),
         37: z => (canMove(player.x - 1, player.y) ? player.x-- : hit.play()),
-        39: z => (canMove(player.x + 1, player.y) ? player.x++ : hit.play()),
+        39: z => (canMove(player.x + 1, player.y) ? (
+            (maze[player.y][player.x + 1] == 7 || maze[player.y][player.x + 1] == -1) ?
+                (player.x++ , hit2.play()) : player.x++
+        ) : hit.play())
     };
     states[e.which]();
     Mazelog.playerX = player.x;
@@ -239,7 +250,7 @@ function fillAllAnswer(blockSize, ctx) {
     let states = {
         0: "white",
         1: "black",
-        2: "red",
+        2: "blue",
     };
     function fillItAnswer(y, x) {
         if (x < maze[y].length) {
@@ -256,7 +267,7 @@ function fillAllAnswer(blockSize, ctx) {
 
 function drawAnswer() {
     maze = searchMaze(0, 1);
-    let st=Mazelog.mazeOffline?'../public/sound/aplauso.mp3':'sound/aplauso.mp3';
+    let st = Mazelog.mazeOffline ? '../public/sound/aplauso.mp3' : 'sound/aplauso.mp3';
     dab = new sound(st);
     dab.play();
     var width = canvas.width();
