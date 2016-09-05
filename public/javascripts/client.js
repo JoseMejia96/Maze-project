@@ -10,7 +10,6 @@ var player = {
 var bordersize = [["800px", "600px"], ["600px", "400px"], ["400px", "200px"]];
 var dbfilled = false;
 var Mazelog = { lasTipo:"",lastMz: "", mazeOffline: false, playerX: "", playerY: "" };
-//-----------------------Cronometro
 
 //-------------FETCH---------------------------------------
 
@@ -95,7 +94,7 @@ function soundTrack(src) {
     }, false);
     myAudio.play();
 }
-//---------------------------ON LOAD--------------------------------------
+//---------------------------ON LOAD----AFTER LOAD---BEFORE LOAD-------------------------------
 
 window.onload = function () {
     let st = Mazelog.mazeOffline ? '../public/sound/back.mp3' : 'sound/back.mp3';
@@ -136,6 +135,7 @@ function retrieveData() {
                 let st = Mazelog.mazeOffline ? '../public/sound/back.mp3' : 'sound/back.mp3';
                 soundTrack(st);
                 Begin();
+                fixBorder();
                 draw();
             }
         }
@@ -287,7 +287,7 @@ function drawAnswer() {
 
 
 
-//-----------------------------Offline-------------------------------
+//-----------------------------Offline- a la bolognesa------------------------------
 
 function saveOffline() {
     localStorage.setItem("Mazelog_Paradigmas_P1", JSON.stringify(Mazelog));
