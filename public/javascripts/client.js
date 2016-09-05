@@ -147,10 +147,7 @@ let Begin = () => (canvas = $('#Maze'), tiempo(),
     document.getElementById("wholePage").style.display = "block"
 );
 
-let Inicio = (a) => (a == 1) ? (Begin(),Mazelog.lasTipo=1, fixBorder(1), getLaberynth(1)) : (
-    (a == 2) ? (Begin(), Mazelog.lasTipo=2,fixBorder(2), getLaberynth(2)) : (
-        (a == 3) ? (Begin(), Mazelog.lasTipo=3,fixBorder(3), getLaberynth(3)) : 0)
-);
+let Inicio = (a) => (Begin(), Mazelog.lasTipo=a, fixBorder(a), getLaberynth(a));
 
 
 
