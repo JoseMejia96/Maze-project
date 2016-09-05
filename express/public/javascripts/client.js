@@ -7,6 +7,7 @@ var player = {
     x: 1,
     y: 0
 };
+var bordersize = [["800px", "600px"], ["600px", "400px"], ["400px", "200px"]];
 var dbfilled = false;
 var Mazelog = { lastMz: "", mazeOffline: false, playerX: "", playerY: "" };
 //-----------------------Cronometro
@@ -66,7 +67,7 @@ let getData = () => fetch('http://localhost:3000/api/ObtenerDatos', {
             fillBarra();
         });
 }).catch(function (error) {
-   fillBarra();
+    fillBarra();
 });
 
 //----------------------Audio fondo-----------------
@@ -100,17 +101,12 @@ window.onload = function () {
     soundTrack(st);
     retrieveData();
     getData();
-
     document.onkeydown = press;
-    
+
 }
 
-function fillBarra() {
-    var te = document.getElementById("infoE");
-    var mode = !Mazelog.mazeOffline;
-    te.value = mode ? "Online" : "Offline";
-   
-}
+let fillBarra = () => document.getElementById("infoE").value = !Mazelog.mazeOffline ? "Online" : "Offline";
+
 
 function nuevola() {
     startAgain();
@@ -150,10 +146,11 @@ let Begin = () => (canvas = $('#Maze'), tiempo(),
     document.getElementById("wholePage").style.display = "block"
 );
 
-let Inicio = (a) => (a == 1) ? (Begin(), getLaberynth(1)) : (
-    (a == 2) ? (Begin(), getLaberynth(2)) : (
-        (a == 3) ? (Begin(), getLaberynth(3)) : 0)
+let Inicio = (a) => (a == 1) ? (Begin(), fixBorder(1), getLaberynth(1)) : (
+    (a == 2) ? (Begin(), fixBorder(2), getLaberynth(2)) : (
+        (a == 3) ? (Begin(), fixBorder(3), getLaberynth(3)) : 0)
 );
+
 
 
 //-----------CHIFRIJO----------------------------------------------
@@ -164,7 +161,14 @@ function jsonMaze(data) {
     return mazeTemp;
 }
 
-//---------------------------Primera vez-----------------------
+//---------------------------Art Attack-----------------------
+function fixBorder(x) {
+    var mb = document.getElementById("Maze");
+    mb.setAttribute("width",bordersize[3 - x][0]);
+    mb.setAttribute("height",bordersize[3 - x][1]);
+
+}
+
 function draw() {
     var width = canvas.width();
     var half;
