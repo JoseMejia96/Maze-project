@@ -112,12 +112,8 @@ function nuevola() {
     startAgain();
     document.getElementById("dificultades").style.display = "block";
     document.getElementById("wholePage").style.display = "none";
-    var canvas, leftRight = 1.2, upDown = -1.8;
-    var maze = [];
     player.x = 1;
     player.y = 0;
-    var dbfilled = false;
-    var Mazelog = { lastMz: "", mazeOffline: false, playerX: "", playerY: "" };
     BorraDatos();
 }
 
