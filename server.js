@@ -19,16 +19,9 @@ var Maze = require('./modelo/model');
 var router = express.Router();
 
 
-router.use(function (req, res, next) {
-	// do logging
-	console.log('Something is happening.');
-	next();
-});
-
 app.use(express.static('public'));
 app.use(express.static('views'));
-router.get('/', function (req, res) {
-});
+
 
 let RangeArray = (a, b) => Array.from({ length: a }, (v, j) => b(j));
 
@@ -174,12 +167,11 @@ function DrawMaze(s) {
 }
 
 
-// REGISTER OUR ROUTES -------------------------------
+// Registar rutas -------------------------------
 app.use('/api', router);
 
 // START THE SERVER
 // =============================================================================
 app.listen(port);
-console.log('Magic happens on port ' + port);
+console.log('Magic starts on port ' + port);
 
-module.exports = app;
