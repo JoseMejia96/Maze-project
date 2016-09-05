@@ -63,9 +63,9 @@ let getData = () => fetch('http://localhost:3000/api/ObtenerDatos', {
             Mazelog.mazeOffline = false;
             dbfilled = true;
             Begin();
+           fixBorder();
             draw();
             fillBarra();
-            fixBorder();
         });
 }).catch(function (error) {
     fillBarra();
@@ -168,7 +168,7 @@ function fixBorder() {
     var mb = document.getElementById("Maze");
     mb.setAttribute("width",bordersize[3 - x][0]);
     mb.setAttribute("height",bordersize[3 - x][1]);
-    draw();
+    //draw();
 }
 
 function draw() {
