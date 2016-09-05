@@ -112,12 +112,8 @@ function nuevola() {
     startAgain();
     document.getElementById("dificultades").style.display = "block";
     document.getElementById("wholePage").style.display = "none";
-    var canvas, leftRight = 1.2, upDown = -1.8;
-    var maze = [];
     player.x = 1;
     player.y = 0;
-    var dbfilled = false;
-    var Mazelog = { lastMz: "", mazeOffline: false, playerX: "", playerY: "" };
     BorraDatos();
 }
 
@@ -147,10 +143,7 @@ let Begin = () => (canvas = $('#Maze'), tiempo(),
     document.getElementById("wholePage").style.display = "block"
 );
 
-let Inicio = (a) => (a == 1) ? (Begin(),Mazelog.lasTipo=1, fixBorder(1), getLaberynth(1)) : (
-    (a == 2) ? (Begin(), Mazelog.lasTipo=2,fixBorder(2), getLaberynth(2)) : (
-        (a == 3) ? (Begin(), Mazelog.lasTipo=3,fixBorder(3), getLaberynth(3)) : 0)
-);
+let Inicio = (a) => (Begin(), Mazelog.lasTipo=a, fixBorder(a), getLaberynth(a));
 
 
 
