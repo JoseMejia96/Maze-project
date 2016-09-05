@@ -3,9 +3,9 @@ var bodyParser = require('body-parser');
 var app = express();
 var morgan = require('morgan');
 
-app.use(morgan('dev'));
+app.use(morgan('dev'));//nada but logs
 
-// configure body parser
+// configuracion body parser
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 

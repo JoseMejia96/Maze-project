@@ -1,2 +1,4 @@
 "# Projecto1" 
-This web based app generates and resolves laberynths using a variety of technologies. The main purpose of this proyect is to investigate and learn more about: AJAX, MONGODB, Express.js, Node.js, HTML5. It will also be mainly implemented using functional programming
+Jose Miguel Fonseca Mora    116520962   Grupo 10am
+Jose Mejia Bravo            116540323   Grupo 10am
+Jesus Murillo Miranda       116320918   Grupo 10am
