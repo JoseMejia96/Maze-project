@@ -9,7 +9,7 @@ var player = {
 };
 var bordersize = [["800px", "600px"], ["600px", "400px"], ["400px", "200px"]];
 var dbfilled = false;
-var Mazelog = { lastMz: "", mazeOffline: false, playerX: "", playerY: "" };
+var Mazelog = { lasTipo:"",lastMz: "", mazeOffline: false, playerX: "", playerY: "" };
 //-----------------------Cronometro
 
 //-------------FETCH---------------------------------------
@@ -65,6 +65,7 @@ let getData = () => fetch('http://localhost:3000/api/ObtenerDatos', {
             Begin();
             draw();
             fillBarra();
+            fixBorder();
         });
 }).catch(function (error) {
     fillBarra();
@@ -146,9 +147,9 @@ let Begin = () => (canvas = $('#Maze'), tiempo(),
     document.getElementById("wholePage").style.display = "block"
 );
 
-let Inicio = (a) => (a == 1) ? (Begin(), fixBorder(1), getLaberynth(1)) : (
-    (a == 2) ? (Begin(), fixBorder(2), getLaberynth(2)) : (
-        (a == 3) ? (Begin(), fixBorder(3), getLaberynth(3)) : 0)
+let Inicio = (a) => (a == 1) ? (Begin(),Mazelog.lasTipo=1, fixBorder(1), getLaberynth(1)) : (
+    (a == 2) ? (Begin(), Mazelog.lasTipo=2,fixBorder(2), getLaberynth(2)) : (
+        (a == 3) ? (Begin(), Mazelog.lasTipo=3,fixBorder(3), getLaberynth(3)) : 0)
 );
 
 
@@ -162,11 +163,12 @@ function jsonMaze(data) {
 }
 
 //---------------------------Art Attack-----------------------
-function fixBorder(x) {
+function fixBorder() {
+    x=Mazelog.lasTipo;
     var mb = document.getElementById("Maze");
     mb.setAttribute("width",bordersize[3 - x][0]);
     mb.setAttribute("height",bordersize[3 - x][1]);
-
+    draw();
 }
 
 function draw() {

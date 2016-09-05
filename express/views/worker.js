@@ -9,4 +9,6 @@ function tiempo() {
     }
 }
 
-let startAgain = () => worker.terminate();
+function startAgain() {
+  worker.terminate();
+}
