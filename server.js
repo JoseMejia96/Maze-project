@@ -2,6 +2,13 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
 var morgan = require('morgan');
+var port = process.env.PORT || 3000;
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/MazeDB');
+mongoose.Promise = require('bluebird');
+var Maze = require('./modelo/model');
+var generate = require('./Control/generateMaze');
+var router = express.Router();
 
 app.use(morgan('dev'));//nada but logs
 
@@ -9,66 +16,38 @@ app.use(morgan('dev'));//nada but logs
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-var port = process.env.PORT || 3000;
-
-var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/MazeDB');
-var Maze = require('./modelo/model');
-var generate = require('./Control/generateMaze');
-
-var router = express.Router();
-
-
 app.use('/index.html',express.static('public'));
 app.use('/index.html',express.static('views'));
 
-
 let RangeArray = (a, b) => Array.from({ length: a }, (v, j) => b(j));
 
-
-router.route("/generaMaze").post(function (req, res) {
-	let s = req.body.size;
-    res.send(JSON.stringify(generate.Dibuja(s)));
+router.route("/generaMaze").post( (req, res)=> {
+    res.send(JSON.stringify(generate.Dibuja(req.body.size)));
 });
 
-router.route('/BorraData').post(function (req, res) {
-	Maze.remove({}, function (err) {
-		if (err) {
-			console.log(err)
-		} else {
-			res.end('success');
-		}
-	}
-    );
+//Elimina
+	router.route('/BorraData').post( (req, res) => {
+	 Maze.remove({}).exec().then(res.send({dato:"borrado"}))
+	                        .catch(err => console.log(err));
+	 });
+
+	//Inserta
+	router.route('/MazeDB').post(function (req, res) {
+		Maze.remove({}).exec().then(res.send({dato:"borrado"}))
+ 	                        .catch(err => console.log(err));
+		var maze = new Maze();
+		maze.x = req.body.x;
+		maze.y = req.body.y;
+		maze.maze =JSON.stringify(req.body.mmmaze);
+		maze.save().exec().then(res.send({dato:"Insertado"}))
+ 	                        .catch(err => console.log(err));
 	});
 
-router.route('/MazeDB').post(function (req, res) {
-	Maze.remove({}, function (err) {
-		if (err) {
-			console.log(err)
-		} else {
-			res.end('success');
-		}
-	}
-    );
-	var maze = new Maze();
-	maze.x = req.body.x;
-	maze.y = req.body.y;
-	maze.maze =JSON.stringify(req.body.mmmaze);
-	maze.save(function (err) {
-		if (err)
-			console.log(err);
-	});
-});
-
-router.route('/ObtenerDatos')
-	.post(function (req, res) {
-		Maze.find(function (err, maze) {
-			if (err)
-				res.send(err);
-			res.json(maze);
+	//Obtener Datos
+	router.route('/ObtenerDatos').post((req, res) => {
+			Maze.find().exec().then((maze) => res.json(maze))
+			.catch(err => console.log(err));
 		});
-	});
 
 // Registar rutas -------------------------------
 app.use('/index.html/api', router);
