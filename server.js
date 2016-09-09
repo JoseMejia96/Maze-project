@@ -19,22 +19,19 @@ app.use(bodyParser.json());
 app.use('/index.html',express.static('public'));
 app.use('/index.html',express.static('views'));
 
-let RangeArray = (a, b) => Array.from({ length: a }, (v, j) => b(j));
-
 router.route("/generaMaze").post( (req, res)=> {
-    res.send(JSON.stringify(generate.Dibuja(req.body.size)));
+    res.send(JSON.stringify(generate.drawMaze.Dibuja(req.body.size)));
 });
 
-//Elimina
-	router.route('/BorraData').post( (req, res) => {
-	 Maze.remove({}).exec().then(res.send({dato:"borrado"}))
-	                        .catch(err => console.log(err));
-	 });
+//Borrar
+router.route('/BorraData').post( (req, res) => {
+ Maze.remove({}).exec().then(res.send({dato:"borrado"}))
+ 		}
+	);
 
 	//Inserta
 	router.route('/MazeDB').post(function (req, res) {
 		Maze.remove({}).exec().then(res.send({dato:"borrado"}))
- 	                        .catch(err => console.log(err));
 		var maze = new Maze();
 		maze.x = req.body.x;
 		maze.y = req.body.y;

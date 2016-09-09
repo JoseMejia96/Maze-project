@@ -30,7 +30,7 @@ let getLaberynth = (x) => fetch('http://localhost:3000/index.html/api/generaMaze
     maze = jsonMaze(getOfflineMaze(x));
     Mazelog.lastMz = maze;
     draw();
-    console.log('Request failed', error);
+    console.log('1) Request failed', error);
 });
 
 

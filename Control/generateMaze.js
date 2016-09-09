@@ -1,4 +1,5 @@
 //-----------------------maze------------------
+let RangeArray = (a, b) => Array.from({ length: a }, (v, j) => b(j));
 
 size = [{ x: 30, y: 40 }, { x: 20, y: 30 }, { x: 10, y: 20 }];
 
