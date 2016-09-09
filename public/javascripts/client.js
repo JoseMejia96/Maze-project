@@ -13,7 +13,7 @@ var Mazelog = { lasTipo:"",lastMz: "", mazeOffline: false, playerX: "", playerY:
 
 //-------------FETCH---------------------------------------
 
-let getLaberynth = (x) => fetch('http://localhost:3000/api/generaMaze', {
+let getLaberynth = (x) => fetch('http://localhost:3000/index.html/api/generaMaze', {
     method: 'POST',
     headers: { "Content-type": "application/json; charset=UTF-8" },
     body: JSON.stringify({ size: x })
@@ -34,7 +34,7 @@ let getLaberynth = (x) => fetch('http://localhost:3000/api/generaMaze', {
 });
 
 
-let enviaDatos = (x, y) => fetch('http://localhost:3000/api/MazeDB', {
+let enviaDatos = (x, y) => fetch('http://localhost:3000/index.html/api/MazeDB', {
     method: 'POST',
     headers: { "Content-type": "application/json; charset=UTF-8" },
     body: JSON.stringify({ x: x, y: y, mmmaze: maze })
@@ -42,7 +42,7 @@ let enviaDatos = (x, y) => fetch('http://localhost:3000/api/MazeDB', {
     console.log('Request failed', error);
 });
 
-let BorraDatos = () => fetch('http://localhost:3000/api/BorraData', {
+let BorraDatos = () => fetch('http://localhost:3000/index.html/api/BorraData', {
     method: 'POST',
     headers: { "Content-type": "application/json; charset=UTF-8" }
 }).catch(function (error) {
@@ -50,7 +50,7 @@ let BorraDatos = () => fetch('http://localhost:3000/api/BorraData', {
 });
 
 
-let getData = () => fetch('http://localhost:3000/api/ObtenerDatos', {
+let getData = () => fetch('http://localhost:3000/index.html/api/ObtenerDatos', {
     method: 'POST',
     headers: { "Content-type": "application/json; charset=UTF-8" }
 }).then(function (response) {
@@ -97,7 +97,7 @@ function soundTrack(src) {
 //---------------------------ON LOAD----AFTER LOAD---BEFORE LOAD-------------------------------
 
 window.onload = function () {
-    let st = Mazelog.mazeOffline ? '../public/sound/back.mp3' : 'sound/back.mp3';
+    let st = Mazelog.mazeOffline ? '../public/sound/back.mp3' : '/index.html/sound/back.mp3';
     soundTrack(st);
     retrieveData();
     getData();
@@ -128,7 +128,7 @@ function retrieveData() {
                 player.x = Mazelog.playerX;
                 player.y = Mazelog.playerY;
                 maze = Mazelog.lastMz;
-                let st = Mazelog.mazeOffline ? '../public/sound/back.mp3' : 'sound/back.mp3';
+                let st = Mazelog.mazeOffline ? '../public/sound/back.mp3' : '/index.html/sound/back.mp3';
                 soundTrack(st);
                 Begin();
                 fixBorder();
@@ -187,10 +187,10 @@ function canMove(x, y) {
 
 //------TRIGGERED EVENT ON KEY DOWN------------------------------
 function press(e) {
-    let st = Mazelog.mazeOffline ? '../public/sound/Boing.mp3' : 'sound/Boing.mp3';
+    let st = Mazelog.mazeOffline ? '../public/sound/Boing.mp3' : '/index.html/sound/Boing.mp3';
     var hit = new sound(st);
     //st=Mazelog.mazeOffline?'../public/sound/dab.mp3':'sound/dab.mp3';
-    let st2 = Mazelog.mazeOffline ? '../public/sound/aplauso.mp3' : 'sound/aplauso.mp3';
+    let st2 = Mazelog.mazeOffline ? '../public/sound/aplauso.mp3' : '/index.html/sound/aplauso.mp3';
     var hit2 = new sound(st2);
     var win, ctx = canvas[0].getContext('2d');
     let states = {
@@ -266,7 +266,7 @@ function fillAllAnswer(blockSize, ctx) {
 
 function drawAnswer() {
     maze = searchMaze(0, 1);
-    let st = Mazelog.mazeOffline ? '../public/sound/aplauso.mp3' : 'sound/aplauso.mp3';
+    let st = Mazelog.mazeOffline ? '../public/sound/aplauso.mp3' : '/index.html/sound/aplauso.mp3';
     dab = new sound(st);
     dab.play();
     var width = canvas.width();
