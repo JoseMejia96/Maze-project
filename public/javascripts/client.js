@@ -51,7 +51,7 @@ let BorraDatos = () => fetch('http://localhost:3000/index.html/api/BorraData', {
 
 
 let getData = () => fetch('http://localhost:3000/index.html/api/ObtenerDatos', {
-    method: 'POST',
+    method: 'GET',
     headers: { "Content-type": "application/json; charset=UTF-8" }
 }).then(function (response) {
     return response.json()

@@ -44,10 +44,9 @@ router.route("/generaMaze").post( (req, res)=> {
 	});
 
 	//Obtener Datos
-	router.route('/ObtenerDatos').post((req, res) => {
-			Maze.find().exec().then((maze) => res.json(maze))
-			.catch(err => console.log(err));
-		});
+	router.route('/ObtenerDatos').get((req,res) => Maze.find().exec()
+	.then(mazes => {console.log(mazes); return mazes}).then(mazes => res.send(mazes))
+	);
 
 // Registar rutas -------------------------------
 app.use('/index.html/api', router);
