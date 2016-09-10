@@ -25,24 +25,24 @@ router.route("/generaMaze").post( (req, res)=> {
 
 //Borrar
 router.route('/BorraData').post( (req, res) => {
- Maze.remove({}).exec().then(res.send({dato:"borrado"}));
+ Maze.remove({}).exec().then(res.send({dato:"borrado"}))
  		}
 	);
 
 	//Inserta
 	router.route('/MazeDB').post(function (req, res) {
-		Maze.remove({}).exec();
+		Maze.remove({}).exec().then(res.send({dato:"borrado"}))
 		var maze = new Maze();
 		maze.x = req.body.x;
 		maze.y = req.body.y;
-		maze.maze = req.body.mmmaze;
+		maze.maze = req.body.maze;
 		maze.save().exec().then(res.send({dato:"Insertado"}))
  	                        .catch(err => console.log(err));
 	});
 
 	//Obtener Datos
 	router.route('/ObtenerDatos').get((req,res) => Maze.find().exec()
-	.then(mazes => {console.log(mazes); return mazes}).then(mazes => res.send(mazes));
+	.then(mazes => {return mazes}).then(mazes => res.send(mazes))
 	);
 
 // Registar rutas -------------------------------

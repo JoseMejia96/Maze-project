@@ -37,7 +37,7 @@ let getLaberynth = (x) => fetch('http://localhost:3000/index.html/api/generaMaze
 let enviaDatos = (x, y) => fetch('http://localhost:3000/index.html/api/MazeDB', {
     method: 'POST',
     headers: { "Content-type": "application/json; charset=UTF-8" },
-    body: JSON.stringify({ x: x, y: y, mmmaze: maze })
+    body: JSON.stringify({ x: x, y: y, maze: maze })
 }).catch(function (error) {
     console.log('Request failed', error);
 });
@@ -56,10 +56,9 @@ let getData = () => fetch('http://localhost:3000/index.html/api/ObtenerDatos', {
 }).then(response => {
     return response.json()
         .then(json => {
-            player.x = parseInt(json[0].x);
-            player.y = parseInt(json[0].y);
-            maze = JSON.parse(json[0].maze);
-            console.log(maze);
+            player.x = json[0].x;
+            player.y = json[0].y;
+            maze = json[0].maze;
             Mazelog.mazeOffline = false;
             dbfilled = true;
             Begin();
