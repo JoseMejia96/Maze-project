@@ -11,14 +11,17 @@ Jesus Murillo Miranda
 	<title>Maze</title>
 	<link rel="stylesheet" type="text/css" href="../public/stylesheets/style.css">
 	<link rel="stylesheet" type="text/css" href="/index.html/stylesheets/style.css">
+	<link rel="stylesheet" type="text/css" href="/index.html/stylesheets/bootstrap.css">
 </head>
 
 <body>
 	<center>
 		<div id="dificultades">
-			<button class="button button1" onclick="Inicio(1)">Facil</button>
-			<button class="button button1" onclick="Inicio(2)">Medio</button>
-			<button class="button button1" onclick="Inicio(3)">Dificil</button>
+			<h1>Menú Maze</h1>
+			<h4>Dificultad del Laberinto</h4>
+			<button class="btn btn-primary btn-lg btn-block" onclick="Inicio(1)">Facil</button>
+			<button class="btn btn-primary btn-lg btn-block" onclick="Inicio(2)">Medio</button>
+			<button class="btn btn-primary btn-lg btn-block" onclick="Inicio(3)">Dificil</button>
 		</div>
 	</center>
 	<div id="wholePage" style="display: none;">
@@ -28,7 +31,7 @@ Jesus Murillo Miranda
 				<table>
 					<tr>
 						<td>
-							<input type="text" disabled="true" id="infoE">
+							<input type="text" class="form-control" id="infoE" disabled>
 						</td>
 					</tr>
 
@@ -42,8 +45,8 @@ Jesus Murillo Miranda
 			<canvas id="Maze" width="800px" height="600px"></canvas>
 			<div id=botones>
 
-				<button class="button button1" onclick="drawAnswer()">Solucionar</button>
-				<button class="button button1" onclick="nuevola()">Generar Nuevo Laberinto</button>
+				<button class="btn btn-primary  btn-xs" onclick="drawAnswer()">Solucionar</button>
+				<button class="btn btn-primary  btn-xs" onclick="nuevola()">Generar Nuevo Laberinto</button>
 			</div>
 		</center>
 	</div>

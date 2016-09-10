@@ -62,7 +62,7 @@ let getData = () => fetch('http://localhost:3000/index.html/api/ObtenerDatos', {
             Mazelog.mazeOffline = false;
             dbfilled = true;
             Begin();
-           fixBorder();
+            fixBorder();
             draw();
             fillBarra();
         });
