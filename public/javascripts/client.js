@@ -53,12 +53,13 @@ let BorraDatos = () => fetch('http://localhost:3000/index.html/api/BorraData', {
 let getData = () => fetch('http://localhost:3000/index.html/api/ObtenerDatos', {
     method: 'GET',
     headers: { "Content-type": "application/json; charset=UTF-8" }
-}).then(function (response) {
+}).then(response => {
     return response.json()
-        .then(function (json) {
+        .then(json => {
             player.x = parseInt(json[0].x);
             player.y = parseInt(json[0].y);
             maze = JSON.parse(json[0].maze);
+            console.log(maze);
             Mazelog.mazeOffline = false;
             dbfilled = true;
             Begin();

@@ -3,8 +3,8 @@ var Schema = mongoose.Schema;
 mongoose.Promise = global.Promise;
 
 var maze = new Schema({
-  x: String,
-  y: String,
-  maze: String
+  x: Object,
+  y: Object,
+  maze: Object
 });
 module.exports = mongoose.model('maze', maze);
